@@ -3,6 +3,10 @@ rules_version = '2';
 // CasePilot AI — Cloud Storage Security Rules
 // A client may upload exactly one file, to the path reserved by the startUpload callable, with the
 // declared size and type. Derived files (pages.json, chunks.json) are unmatched and therefore denied.
+//
+// These rules read Firestore (firestore.get), which needs the Storage service agent to hold
+// roles/firebaserules.firestoreServiceAgent. `firebase deploy --only storage` offers to grant it,
+// but only when this file has changed since the last deploy; unchanged rules skip the check.
 
 service firebase.storage {
   match /b/{bucket}/o {
