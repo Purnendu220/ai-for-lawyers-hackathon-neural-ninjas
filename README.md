@@ -11,10 +11,9 @@ Hackathon team repository for Neural Ninjas - [hackindia-team:ai-for-lawyers-hac
 
 > **Live app:** https://casepilot-neural-ninjas.web.app
 >
-> **Status:** in development. Day 1 of 8 is done: sign-in, workspaces, roles and the installable PWA
-> shell. Creating a workspace on the live app waits on the Firebase Blaze upgrade (see
-> [Deploy](#deploy)); everything works on the local emulators. See [Features](#features) for what
-> works today and the [implementation plan](docs/IMPLEMENTATION_PLAN.md) for what comes next.
+> **Status:** in development. Day 1 of 8 is done and deployed: sign-in, workspaces, roles and the
+> installable PWA shell. See [Features](#features) for what works today and the
+> [implementation plan](docs/IMPLEMENTATION_PLAN.md) for what comes next.
 
 ---
 
@@ -192,16 +191,15 @@ public web config is in `apps/web/.env.production`.
 | Web app (Hosting) | `npm run deploy:web` | Live at https://casepilot-neural-ninjas.web.app |
 | Firestore rules and indexes | `npm run deploy:rules` | Deployed; database in `asia-south1` |
 | Sign-in providers | `npx firebase deploy --only auth` | Email/Password and Google enabled |
-| Cloud Functions | `npx firebase deploy --only functions` | Needs the Blaze plan |
-| Storage rules | `npx firebase deploy --only storage` | Needs the Blaze plan and a bucket |
+| Cloud Functions | `npx firebase deploy --only functions` | `createOrganization` deployed in `asia-south1` |
+| Storage rules | `npx firebase deploy --only storage` | Deployed; bucket in `asia-south1`, CORS set from `storage.cors.json` |
 
-To finish the backend:
+The project is on the Blaze plan. Two one-time steps remain for whoever owns the project:
 
-1. Upgrade the project to Blaze (pay-as-you-go) at
-   https://console.firebase.google.com/project/casepilot-neural-ninjas/usage/details and set a
-   budget alert.
-2. In the console, open **Storage → Get started** and create the default bucket in `asia-south1`.
-3. Run `npm run deploy` to deploy everything.
+1. **Allow Storage rules to read Firestore.** Run `npx firebase deploy --only storage` in an
+   interactive terminal and answer **Yes** when asked to grant the cross-service IAM role. Until
+   then, uploads are denied (needed from Day 3).
+2. **Set a budget alert** in Google Cloud Billing so AI and function costs can't surprise you.
 
 To use your own project instead, create one with Firestore in `asia-south1`, put its ID in
 `.firebaserc`, and replace the values in `apps/web/.env.production` with its web config.

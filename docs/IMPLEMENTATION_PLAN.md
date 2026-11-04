@@ -28,18 +28,21 @@ apply the [cut list](#cut-list).
 
 ## Day 0 — Setup (half day, before kickoff)
 
-- [ ] **Firebase projects.**
+- [x] **Firebase projects.**
   - [x] One project, `casepilot-neural-ninjas`, used for dev and the demo.
-  - [ ] Upgrade it to the Blaze plan, with a budget alert. Blocks Functions and Storage.
+  - [x] Upgrade it to the Blaze plan.
+  - [ ] Set a budget alert.
   - [x] Create Firestore (Native) in **`asia-south1`**. This cannot be changed later.
-  - [ ] Create the default Storage bucket in **`asia-south1`** (needs Blaze).
+  - [x] Create the default Storage bucket in **`asia-south1`**, with CORS from `storage.cors.json`.
+  - [ ] Grant the Storage service agent the cross-service rules role: run
+        `npx firebase deploy --only storage` interactively and answer Yes. Needed before Day 3.
 - [x] **Auth.** Email/Password and Google enabled through `firebase deploy --only auth`. The
       `web.app` and `firebaseapp.com` domains are authorized by default.
 - [ ] **App Check.** Register the web app with reCAPTCHA Enterprise and create debug tokens for
       local development. Don't enforce yet.
 - [ ] **OpenAI.**
   - [ ] Create a project key with a monthly spend cap.
-  - [ ] Run `firebase functions:secrets:set OPENAI_API_KEY` (needs Blaze).
+  - [ ] Run `firebase functions:secrets:set OPENAI_API_KEY`.
 - [x] **Repository.**
   - [x] npm workspaces skeleton: `apps/web`, `functions`, `packages/shared`.
   - [x] Shared `tsconfig`, ESLint, Prettier.
@@ -91,9 +94,10 @@ apply the [cut list](#cut-list).
 **Gate G1.** On the dev project, a new user signs in, creates a workspace and lands on the
 dashboard. Chrome offers to install the app. Reloading while offline shows the app shell.
 
-> **Status, 4 Nov 2026:** passed on the local emulators (backend path checked over HTTP). On
-> `casepilot-neural-ninjas` the app is live and sign-in is enabled, but creating a workspace waits on
-> the Blaze upgrade so `createOrganization` can deploy.
+> **Status, 4 Nov 2026:** passed on the local emulators (backend path checked over HTTP).
+> Deployed to `casepilot-neural-ninjas`: Hosting, Firestore rules and indexes, Storage rules,
+> sign-in providers and `createOrganization`. Still to check by hand on the live app: sign up,
+> create a workspace, install the PWA.
 
 ---
 
