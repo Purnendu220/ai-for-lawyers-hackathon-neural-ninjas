@@ -1,0 +1,156 @@
+{
+  "e9ebde9fed820c3770f78fe73ca6c650f4cb8fe26d923d250f54c4b9a7d488e6": {
+    "documentSummary": "A fictional sample order (explicitly marked as not a real court order) from Demo Civil Court, Delhi, in ABC Traders v. XYZ Supplies, dated 2 November 2026. It directs the plaintiff to file an updated statement of account within 14 days of the order. It permits the defendant to file a response within 14 days after service of that statement. It lists the matter for the next hearing on 15 December 2026. It requires both parties to ensure their authorized representatives are available on the next date.",
+    "language": "en",
+    "caseDetails": {
+      "caseNumber": null,
+      "courtName": "Demo Civil Court, Delhi",
+      "caseType": null,
+      "parties": [
+        "ABC Traders",
+        "XYZ Supplies"
+      ],
+      "dateOfOrder": "2026-11-02"
+    },
+    "facts": [
+      {
+        "fact": "The document is marked as a fictional sample and not a real court order.",
+        "sourcePage": 1,
+        "sourceQuote": "FICTIONAL SAMPLE - NOT A REAL COURT ORDER"
+      },
+      {
+        "fact": "The order was passed by Demo Civil Court, Delhi in the matter ABC Traders v. XYZ Supplies.",
+        "sourcePage": 1,
+        "sourceQuote": "Demo Civil Court, Delhi\nABC Traders v. XYZ Supplies"
+      },
+      {
+        "fact": "The order is dated 2 November 2026.",
+        "sourcePage": 1,
+        "sourceQuote": "Order dated 2 November 2026"
+      },
+      {
+        "fact": "The matter is listed for the next hearing on 15 December 2026.",
+        "sourcePage": 1,
+        "sourceQuote": "The matter is listed for the next hearing on 15 December 2026."
+      }
+    ],
+    "directions": [
+      {
+        "direction": "The plaintiff shall file its updated statement of account within 14 days from the date of the order.",
+        "directionType": "explicit",
+        "condition": null,
+        "responsibleParty": "Plaintiff (ABC Traders)",
+        "sourcePage": 1,
+        "sourceQuote": "The plaintiff shall file its updated statement of account within 14 days from the date of this"
+      },
+      {
+        "direction": "The defendant may file a response within 14 days after service of the updated statement of account.",
+        "directionType": "conditional",
+        "condition": "Service of the plaintiff's updated statement of account on the defendant.",
+        "responsibleParty": "Defendant (XYZ Supplies)",
+        "sourcePage": 1,
+        "sourceQuote": "The defendant may file a response within 14 days after service of the updated statement of"
+      },
+      {
+        "direction": "Both parties shall ensure that their authorized representatives are available on the next date.",
+        "directionType": "explicit",
+        "condition": null,
+        "responsibleParty": "Both parties (ABC Traders and XYZ Supplies)",
+        "sourcePage": 1,
+        "sourceQuote": "Both parties shall ensure that their authorized representatives are available on the next date."
+      }
+    ],
+    "dates": [
+      {
+        "dateText": "2 November 2026",
+        "normalizedDate": "2026-11-02",
+        "dateType": "order_date",
+        "basis": "explicit",
+        "sourcePage": 1,
+        "sourceQuote": "Order dated 2 November 2026"
+      },
+      {
+        "dateText": "within 14 days from the date of this order",
+        "normalizedDate": null,
+        "dateType": "filing_deadline",
+        "basis": "relative_to_order",
+        "sourcePage": 1,
+        "sourceQuote": "within 14 days from the date of this"
+      },
+      {
+        "dateText": "within 14 days after service of the updated statement of account",
+        "normalizedDate": null,
+        "dateType": "filing_deadline",
+        "basis": "relative_to_service",
+        "sourcePage": 1,
+        "sourceQuote": "within 14 days after service of the updated statement of"
+      },
+      {
+        "dateText": "15 December 2026",
+        "normalizedDate": "2026-12-15",
+        "dateType": "hearing",
+        "basis": "explicit",
+        "sourcePage": 1,
+        "sourceQuote": "listed for the next hearing on 15 December 2026"
+      }
+    ],
+    "proposedTasks": [
+      {
+        "title": "File updated statement of account (plaintiff)",
+        "description": "If acting for the plaintiff (ABC Traders), prepare and file the updated statement of account within 14 days from the order dated 2 November 2026. A lawyer must verify the exact computation of the deadline.",
+        "priority": "high",
+        "suggestedDueDate": null,
+        "dueDateBasis": "relative_to_order",
+        "condition": null,
+        "sourcePage": 1,
+        "sourceQuote": "The plaintiff shall file its updated statement of account within 14 days from the date of this"
+      },
+      {
+        "title": "Track service of updated statement of account",
+        "description": "Record the date on which the updated statement of account is served on the defendant. The defendant's 14-day response period runs from that date.",
+        "priority": "medium",
+        "suggestedDueDate": null,
+        "dueDateBasis": "none",
+        "condition": "Updated statement of account is filed and served.",
+        "sourcePage": 1,
+        "sourceQuote": "within 14 days after service of the updated statement of"
+      },
+      {
+        "title": "Consider and file response (defendant)",
+        "description": "If acting for the defendant (XYZ Supplies), decide whether to file a response. Any response may be filed within 14 days after service of the updated statement of account.",
+        "priority": "medium",
+        "suggestedDueDate": null,
+        "dueDateBasis": "relative_to_service",
+        "condition": "Service of the updated statement of account on the defendant.",
+        "sourcePage": 1,
+        "sourceQuote": "The defendant may file a response within 14 days after service of the updated statement of"
+      },
+      {
+        "title": "Calendar next hearing",
+        "description": "Add the next hearing on 15 December 2026 to the calendar and prepare for it.",
+        "priority": "medium",
+        "suggestedDueDate": "2026-12-15",
+        "dueDateBasis": "explicit",
+        "condition": null,
+        "sourcePage": 1,
+        "sourceQuote": "listed for the next hearing on 15 December 2026"
+      },
+      {
+        "title": "Arrange authorized representative for next date",
+        "description": "Ensure that an authorized representative of the client is available on the next date of hearing (15 December 2026).",
+        "priority": "medium",
+        "suggestedDueDate": "2026-12-15",
+        "dueDateBasis": "relative_to_hearing",
+        "condition": null,
+        "sourcePage": 1,
+        "sourceQuote": "Both parties shall ensure that their authorized representatives are available on the next date."
+      }
+    ],
+    "warnings": [
+      "The document states it is a FICTIONAL SAMPLE and not a real court order. It states that it does not establish real legal deadlines.",
+      "No case number or case type is stated in the document.",
+      "The 14-day periods are relative. No calendar dates have been computed. The defendant's response deadline depends on the date of service, which is unknown.",
+      "The document does not specify which party the user represents. Tasks are framed for both sides and require lawyer review."
+    ]
+  }
+}

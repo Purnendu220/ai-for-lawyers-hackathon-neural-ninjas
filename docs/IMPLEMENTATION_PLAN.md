@@ -43,7 +43,7 @@ apply the [cut list](#cut-list).
 - [ ] **Anthropic (Claude).**
   - [x] Get an API key.
   - [ ] Set a monthly spend limit on it in the Claude Console.
-  - [ ] Run `npx firebase functions:secrets:set ANTHROPIC_API_KEY`.
+  - [x] Run `npx firebase functions:secrets:set ANTHROPIC_API_KEY`.
 - [x] **Repository.**
   - [x] npm workspaces skeleton: `apps/web`, `functions`, `packages/shared`.
   - [x] Shared `tsconfig`, ESLint, Prettier.
@@ -161,14 +161,15 @@ with the rules tests passing; and an invite can be sent and accepted.
 - [x] Claude provider: `claude-opus-5-5`, structured outputs, refusal fallback, Zod revalidation.
 - [x] Page-marked prompt input with marker spoofing stripped.
 - [x] Citation verifier (ARCHITECTURE §6.2).
-- [ ] Record the first good live run on the sample order as the fixture (needs the API key).
+- [x] Record the first good live run on the sample order as the fixture (`functions/fixtures/recordings.live.json`).
 
 **Gate G2: vertical slice.** On dev, uploading the sample order shows a summary and directions with
 page references within about a minute. If not, apply the cut list before starting Day 4.
 
-> **Status, 4 Nov 2026:** built and tested on the emulators: 20 integration tests cover upload,
-> rejection, extraction, analysis, citation checks and re-runs. The live gate waits on the
-> `ANTHROPIC_API_KEY` secret and the Storage cross-service permission.
+> **Status, 4 Nov 2026:** built, tested and deployed. 20 integration tests cover upload, rejection,
+> extraction, analysis, citation checks and re-runs. A live Claude run on the sample order took 36 s
+> from upload to review, with all 16 citations verified. Live uploads on `casepilot-neural-ninjas`
+> wait on the Storage cross-service permission (Day 0).
 
 ---
 

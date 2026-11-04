@@ -78,7 +78,7 @@ and confirming inferred deadlines without a lawyer.
 | Case management | Create, edit, archive and search cases; filter by status, court and lawyer; assign lawyers | ✅ Built |
 | Team | Invite by private link, verified-email acceptance, role changes, suspension | ✅ Built |
 | Private document upload | PDF and DOCX up to 15 MB, file-signature checked, private storage | ✅ Built |
-| AI summary and extraction | Directions, dates, facts and proposed tasks, with page citations checked against the text | ✅ Built (live once the API key is set) |
+| AI summary and extraction | Directions, dates, facts and proposed tasks, with page citations checked against the text | ✅ Built |
 | Human review | Side-by-side PDF and findings; approve, edit or reject each item | Day 4 |
 | Tasks and timeline | Kanban and list views, verified hearing dates, overdue flags | Day 5 |
 | Dashboard | Upcoming hearings, urgent tasks, recent activity | Day 5 |
@@ -208,6 +208,21 @@ The project is on the Blaze plan. Two one-time steps remain for whoever owns the
    interactive terminal and answer **Yes** when asked to grant the cross-service IAM role. Until
    then, uploads are denied (needed from Day 3).
 2. **Set a budget alert** in Google Cloud Billing so AI and function costs can't surprise you.
+
+### Demo fallback
+
+If the Claude API is unavailable during a demo, the deployed app can replay a recorded live run
+of `seed/samples/sample-order.pdf` (`functions/fixtures/recordings.live.json`). The app labels
+replayed analyses as such. To switch it on, create `functions/.env.casepilot-neural-ninjas` with:
+
+```
+AI_MODE=fixture
+AI_FIXTURES_FILE=fixtures/recordings.live.json
+```
+
+then run `npx firebase deploy --only functions`. Delete the file and deploy again to go back to
+live Claude. To record a new run, start the emulators against the real project with
+`AI_RECORD_FILE=fixtures/recordings.live.json` in `functions/.env.local`, and upload the file.
 
 To use your own project instead, create one with Firestore in `asia-south1`, put its ID in
 `.firebaserc`, and replace the values in `apps/web/.env.production` with its web config.

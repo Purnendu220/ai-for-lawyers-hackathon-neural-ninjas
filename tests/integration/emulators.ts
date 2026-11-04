@@ -1,7 +1,8 @@
 import { randomUUID } from 'node:crypto';
 
 // Talks to the Firebase emulators over their REST APIs, the same way the web SDK does.
-const PROJECT = 'demo-casepilot';
+// EMULATOR_PROJECT/EMULATOR_BUCKET let scratch scripts run against a real project ID's emulators.
+const PROJECT = process.env.EMULATOR_PROJECT ?? 'demo-casepilot';
 const AUTH = 'http://127.0.0.1:9099/identitytoolkit.googleapis.com/v1';
 const FUNCTIONS = `http://127.0.0.1:5001/${PROJECT}/asia-south1`;
 const FIRESTORE = `http://127.0.0.1:8180/v1/projects/${PROJECT}/databases/(default)/documents`;
@@ -100,7 +101,8 @@ export async function warmUp(names: string[]): Promise<void> {
   }
 }
 
-const STORAGE = 'http://127.0.0.1:9199/v0/b/demo-casepilot.appspot.com/o';
+const BUCKET = process.env.EMULATOR_BUCKET ?? `${PROJECT}.appspot.com`;
+const STORAGE = `http://127.0.0.1:9199/v0/b/${BUCKET}/o`;
 
 /** Uploads like the web SDK does, so Storage rules apply. Returns the HTTP status. */
 export async function uploadObject(
