@@ -9,9 +9,12 @@ approves it.
 
 Hackathon team repository for Neural Ninjas - [hackindia-team:ai-for-lawyers-hackathon:neural-ninjas]
 
+> **Live app:** https://casepilot-neural-ninjas.web.app
+>
 > **Status:** in development. Day 1 of 8 is done: sign-in, workspaces, roles and the installable PWA
-> shell. See [Features](#features) for what works today and the
-> [implementation plan](docs/IMPLEMENTATION_PLAN.md) for what comes next.
+> shell. Creating a workspace on the live app waits on the Firebase Blaze upgrade (see
+> [Deploy](#deploy)); everything works on the local emulators. See [Features](#features) for what
+> works today and the [implementation plan](docs/IMPLEMENTATION_PLAN.md) for what comes next.
 
 ---
 
@@ -179,14 +182,29 @@ npm run dev:emulator    # terminal 2: the app on http://localhost:5173
 
 The emulators run a local demo project (`demo-casepilot`) with no cloud resources.
 
-### Connect a real Firebase project
+### Deploy
 
-1. Create the project on the Blaze plan, with Firestore and Storage in `asia-south1`. This region
-   cannot be changed later.
-2. Enable Email/Password and Google sign-in.
-3. Put the project ID in `.firebaserc`, then copy `apps/web/.env.example` to `apps/web/.env.local`
-   and fill in the web config.
-4. Deploy with `npx firebase deploy`.
+The app deploys to the Firebase project `casepilot-neural-ninjas` (set in `.firebaserc`). Its
+public web config is in `apps/web/.env.production`.
+
+| Part | Command | State |
+|---|---|---|
+| Web app (Hosting) | `npm run deploy:web` | Live at https://casepilot-neural-ninjas.web.app |
+| Firestore rules and indexes | `npm run deploy:rules` | Deployed; database in `asia-south1` |
+| Sign-in providers | `npx firebase deploy --only auth` | Email/Password and Google enabled |
+| Cloud Functions | `npx firebase deploy --only functions` | Needs the Blaze plan |
+| Storage rules | `npx firebase deploy --only storage` | Needs the Blaze plan and a bucket |
+
+To finish the backend:
+
+1. Upgrade the project to Blaze (pay-as-you-go) at
+   https://console.firebase.google.com/project/casepilot-neural-ninjas/usage/details and set a
+   budget alert.
+2. In the console, open **Storage → Get started** and create the default bucket in `asia-south1`.
+3. Run `npm run deploy` to deploy everything.
+
+To use your own project instead, create one with Firestore in `asia-south1`, put its ID in
+`.firebaserc`, and replace the values in `apps/web/.env.production` with its web config.
 
 ### Scripts
 
@@ -200,6 +218,9 @@ The emulators run a local demo project (`demo-casepilot`) with no cloud resource
 | `npm run lint` | ESLint across the repo |
 | `npm test` | Unit tests |
 | `npm run test:rules` | Security-rules tests against the Firestore emulator |
+| `npm run deploy` | Deploy everything to Firebase |
+| `npm run deploy:web` | Build and deploy only the web app |
+| `npm run deploy:rules` | Deploy only the Firestore rules and indexes |
 
 ### Troubleshooting
 

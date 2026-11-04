@@ -1,4 +1,13 @@
 {
+  "auth": {
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "CasePilot AI",
+        "supportEmail": "purendu220@gmail.com"
+      }
+    }
+  },
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
@@ -18,7 +27,7 @@
   "hosting": {
     "public": "apps/web/dist",
     "ignore": ["firebase.json", "**/.*"],
-    "predeploy": ["npm run build -w @casepilot/web"],
+    "predeploy": ["npm --prefix apps/web run build"],
     "rewrites": [{ "source": "**", "destination": "/index.html" }],
     "headers": [
       {
@@ -31,6 +40,14 @@
       },
       {
         "source": "/sw.js",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+      },
+      {
+        "source": "/",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+      },
+      {
+        "source": "**/!(*.*)",
         "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
       },
       {

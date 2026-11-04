@@ -22,69 +22,78 @@ apply the [cut list](#cut-list).
 **Done means:**
 - typed end to end through `packages/shared`
 - tested at the layer listed in ARCHITECTURE §10
-- deployed to `casepilot-dev`
+- deployed to `casepilot-neural-ninjas`
 
 ---
 
 ## Day 0 — Setup (half day, before kickoff)
 
 - [ ] **Firebase projects.**
-  - [ ] Create `casepilot-dev` and `casepilot-demo` on the Blaze plan, with budget alerts.
-  - [ ] Create Firestore (Native) and the default Storage bucket in **`asia-south1`**. This cannot
-        be changed later.
-- [ ] **Auth.** Enable Email/Password and Google. Add the Hosting domains to the authorized domains.
+  - [x] One project, `casepilot-neural-ninjas`, used for dev and the demo.
+  - [ ] Upgrade it to the Blaze plan, with a budget alert. Blocks Functions and Storage.
+  - [x] Create Firestore (Native) in **`asia-south1`**. This cannot be changed later.
+  - [ ] Create the default Storage bucket in **`asia-south1`** (needs Blaze).
+- [x] **Auth.** Email/Password and Google enabled through `firebase deploy --only auth`. The
+      `web.app` and `firebaseapp.com` domains are authorized by default.
 - [ ] **App Check.** Register the web app with reCAPTCHA Enterprise and create debug tokens for
       local development. Don't enforce yet.
 - [ ] **OpenAI.**
   - [ ] Create a project key with a monthly spend cap.
-  - [ ] Run `firebase functions:secrets:set OPENAI_API_KEY` on both projects.
-- [ ] **Repository.**
-  - [ ] npm workspaces skeleton: `apps/web`, `functions`, `packages/shared`.
-  - [ ] Shared `tsconfig`, ESLint, Prettier.
-  - [ ] GitHub Actions running typecheck and lint.
+  - [ ] Run `firebase functions:secrets:set OPENAI_API_KEY` (needs Blaze).
+- [x] **Repository.**
+  - [x] npm workspaces skeleton: `apps/web`, `functions`, `packages/shared`.
+  - [x] Shared `tsconfig`, ESLint, Prettier.
+  - [x] GitHub Actions running typecheck, lint, tests, build and rules tests.
 - [ ] **Synthetic documents.**
   - [ ] Turn the blueprint §9 sample order into a PDF and a DOCX.
   - [ ] Write the eval variants: conditional direction, relative deadline, prompt injection,
         Hindi order, blank page.
   - [ ] Stamp every file "FICTIONAL SAMPLE".
-- [ ] **PWA assets.** App icons at 192, 512 and maskable 512, plus two placeholder install
-      screenshots.
+- [ ] **PWA assets.**
+  - [x] App icons at 64, 192, 512 and maskable 512, generated from `apps/web/public/logo.svg`.
+  - [ ] Two install screenshots.
 
 ---
 
 ## Day 1 — Sign in and open a workspace
 
 **WEB**
-- [ ] Vite + React + TypeScript; Tailwind + shadcn/ui theme.
-- [ ] App shell: sidebar, top bar, mobile bottom bar.
-- [ ] Router with the full route tree from ARCHITECTURE §4.2, lazy-loaded; placeholder pages are
+- [x] Vite + React + TypeScript; Tailwind + shadcn/ui theme.
+- [x] App shell: sidebar, top bar, mobile bottom bar.
+- [x] Router with the full route tree from ARCHITECTURE §4.2, lazy-loaded; placeholder pages are
       fine.
-- [ ] `RequireAuth` and `RequireOrg` guards. Login with Email/Password and Google. Onboarding that
+- [x] `RequireAuth` and `RequireOrg` guards. Login with Email/Password and Google. Onboarding that
       creates an organization and picks the workspace type.
-- [ ] PWA:
-  - [ ] `vite-plugin-pwa` with `injectManifest` and `sw.ts` (precache, SPA fallback with the `/__/`
+- [x] PWA:
+  - [x] `vite-plugin-pwa` with `injectManifest` and `sw.ts` (precache, SPA fallback with the `/__/`
         denylist).
-  - [ ] Manifest.
-  - [ ] Update-available toast.
-  - [ ] Install button.
+  - [x] Manifest.
+  - [x] Update-available toast.
+  - [x] Install button.
 
 **API**
-- [ ] `firebase.json` with emulators, Hosting rewrites and cache headers.
-- [ ] Functions scaffold: `setGlobalOptions`, `parseInput`, `requireMember`, `audit`, `HttpsError`
+- [x] `firebase.json` with emulators, Hosting rewrites and cache headers.
+- [x] Functions scaffold: `setGlobalOptions`, `parseInput`, `requireMember`, `audit`, `HttpsError`
       helpers.
-- [ ] `createOrganization` writes the org, the owner membership, `users.memberships` and an audit
-      entry in one batch.
-- [ ] `firestore.rules` v0: deny by default; members read their org; users read their own doc.
-- [ ] `packages/shared`: enums, the permission matrix, path builders, and Zod schemas for org and
+- [x] `createOrganization` writes the org, the owner membership, `users.memberships` and an audit
+      entry in one transaction.
+- [x] `firestore.rules`: deny by default; members read their org; users read their own doc;
+      client writes denied. Covered by 11 rules tests.
+- [x] `packages/shared`: enums, the permission matrix, path builders, and Zod schemas for org and
       member.
 
 **AI**
-- [ ] The extraction Zod schema from blueprint §8, nullable rather than optional.
-- [ ] `extract.v1` prompt.
-- [ ] `AiProvider` interface and fixture provider.
+- [x] The extraction Zod schema from blueprint §8, nullable rather than optional, checked for
+      Structured Outputs strict mode.
+- [x] `extract.v1` prompt, with forged page markers stripped from document text.
+- [x] `AiProvider` interface and fixture provider.
 
 **Gate G1.** On the dev project, a new user signs in, creates a workspace and lands on the
 dashboard. Chrome offers to install the app. Reloading while offline shows the app shell.
+
+> **Status, 4 Nov 2026:** passed on the local emulators (backend path checked over HTTP). On
+> `casepilot-neural-ninjas` the app is live and sign-in is enabled, but creating a workspace waits on
+> the Blaze upgrade so `createOrganization` can deploy.
 
 ---
 
@@ -268,10 +277,10 @@ unsupported question says the documents don't establish the answer.
 
 - [ ] **Demo data.**
   - [ ] `seed/` script creates the demo organization, members and case `CP-DEMO-001` on
-        `casepilot-demo`.
+        `casepilot-neural-ninjas`.
   - [ ] `seed/reset` restores it.
   - [ ] A processed fallback analysis is present and carries the "Replayed analysis" badge.
-- [ ] **Deploy.** Deploy the tagged build to `casepilot-demo`. Set `minInstances: 1` on the four
+- [ ] **Deploy.** Deploy the tagged build to `casepilot-neural-ninjas`. Set `minInstances: 1` on the four
       demo-path functions.
 - [ ] **Rehearse.** Run the blueprint §11 script three times from a clean browser session, once on
       the installed PWA. Record a backup video.

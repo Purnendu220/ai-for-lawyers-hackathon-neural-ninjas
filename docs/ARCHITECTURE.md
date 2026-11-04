@@ -799,8 +799,7 @@ service firebase.storage {
 | Environment | Where | Purpose |
 |---|---|---|
 | local | Emulator Suite: Auth, Firestore, Storage, Functions (including task queues), Hosting. `AI_MODE=fixture` | Daily development, rules and function tests |
-| dev | Project `casepilot-dev` | Integration with the live model; Hosting preview channel per PR |
-| demo | Project `casepilot-demo` | Judging. Seeded data, deployed from a tagged commit |
+| cloud | Project `casepilot-neural-ninjas`, served at https://casepilot-neural-ninjas.web.app | Integration with the live model, Hosting preview channels per PR, and the judged demo. Split off a separate demo project later if dev changes must stay off the demo |
 
 - **Billing.** The Blaze plan is required for Functions, Secret Manager and Cloud Tasks. Set a
   budget alert on both projects.

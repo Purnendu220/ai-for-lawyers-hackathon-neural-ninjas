@@ -20,6 +20,9 @@
     "lint": "eslint .",
     "test": "npm run test --workspaces --if-present",
     "test:rules": "firebase emulators:exec --project demo-casepilot --only firestore \"npm run test:emulator -w @casepilot/rules-tests\"",
+    "deploy": "firebase deploy",
+    "deploy:web": "firebase deploy --only hosting",
+    "deploy:rules": "firebase deploy --only firestore",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

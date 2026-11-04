@@ -1,7 +1,5 @@
 {
   "projects": {
-    "default": "casepilot-dev",
-    "dev": "casepilot-dev",
-    "demo": "casepilot-demo"
+    "default": "casepilot-neural-ninjas"
   }
 }
