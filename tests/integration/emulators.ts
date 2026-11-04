@@ -150,3 +150,45 @@ export async function adminObjectStatus(path: string): Promise<number> {
   });
   return response.status;
 }
+
+/** Lists a collection as `user`. Returns the document IDs and plain fields. */
+export async function listDocs(path: string, user: TestUser): Promise<{ id: string; fields: Record<string, unknown> }[]> {
+  const response = await fetch(`${FIRESTORE}/${path}?pageSize=300`, {
+    headers: { authorization: `Bearer ${user.token}` },
+  });
+  const body = (await response.json()) as { documents?: { name: string; fields?: Record<string, any> }[] };
+  return (body.documents ?? []).map((doc) => ({
+    id: doc.name.split('/').pop() as string,
+    fields: Object.fromEntries(Object.entries(doc.fields ?? {}).map(([k, v]) => [k, plain(v)])),
+  }));
+}
+
+/** Uploads the sample order to a case and waits for its analysis (replayed in the emulator). */
+export async function analyseSample(orgId: string, caseId: string, user: TestUser): Promise<string> {
+  const { readFileSync } = await import('node:fs');
+  const pdf = new Uint8Array(readFileSync(new URL('../../seed/samples/sample-order.pdf', import.meta.url)));
+  const { result } = await call(
+    'startUpload',
+    { orgId, caseId, fileName: 'sample-order.pdf', mimeType: 'application/pdf', sizeBytes: pdf.byteLength },
+    user,
+  );
+  await uploadObject(result.storagePath, pdf, 'application/pdf', user);
+  const doc = await waitForDoc(
+    `organizations/${orgId}/cases/${caseId}/documents/${result.documentId}`,
+    user,
+    (d) => ['ready', 'failed', 'rejected'].includes(d.processingStatus as string),
+  );
+  if (doc.processingStatus !== 'ready') throw new Error(`Sample analysis ${String(doc.processingStatus)}: ${String(doc.errorCode)}`);
+  return doc.latestAnalysisId as string;
+}
+
+export const emptyCaseFields = (title: string) => ({
+  title,
+  caseNumber: '',
+  courtName: '',
+  matterType: '',
+  caseType: '',
+  clientName: '',
+  opposingParty: '',
+  assignedLawyerIds: [] as string[],
+});

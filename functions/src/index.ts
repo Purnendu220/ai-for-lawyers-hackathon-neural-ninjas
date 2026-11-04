@@ -5,6 +5,7 @@ export { createOrganization } from './callables/org';
 export { acceptInvitation, inviteMember, revokeInvitation, updateMember } from './callables/team';
 export { archiveCase, createCase, updateCase } from './callables/cases';
 export { analyzeDocument, startUpload } from './callables/documents';
+export { reviewAnalysis } from './callables/review';
 export { onUploadFinalized } from './triggers/onUploadFinalized';
 export { processDocument } from './tasks/processDocument';
 export { runAnalysis } from './tasks/runAnalysis';

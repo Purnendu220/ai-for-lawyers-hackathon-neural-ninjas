@@ -2,17 +2,24 @@ import type { AllowedMimeType } from './constants';
 import type {
   AnalysisStatus,
   CaseStatus,
+  DateStatus,
   DocumentStatus,
+  DueDateBasis,
+  EventType,
   ItemDecision,
   JobStatus,
   JobType,
   Language,
   MemberStatus,
+  Origin,
   Role,
   SourceUnit,
+  TaskPriority,
+  TaskStatus,
   WorkspaceType,
 } from './enums';
 import type { OrgPolicy } from './permissions';
+import type { ReviewEdits } from './schemas/review';
 import type {
   ExtractedDate,
   ExtractedDirection,
@@ -189,6 +196,9 @@ export type AnalysisItemReview<TS> = {
   decision: ItemDecision;
   decidedBy: string | null;
   decidedAt: TS | null;
+  /** What the reviewer changed, kept beside the AI's original values. */
+  edits: ReviewEdits | null;
+  /** The task or event created on approval. */
   resultEntityId: string | null;
 };
 
@@ -238,4 +248,47 @@ export type JobDoc<TS> = {
   completedAt: TS | null;
   durationMs: number | null;
   errorCode: string | null;
+};
+
+/** Fields every task and event carries so cross-case queries can filter by organization. */
+type CaseScoped = { orgId: string; caseId: string; caseTitle: string };
+
+export type TaskDoc<TS> = CaseScoped & {
+  title: string;
+  description: string;
+  status: TaskStatus;
+  priority: TaskPriority;
+  assignedTo: string | null;
+  /** Midnight IST of dueDateOnly; always written (null when unknown) so it can be sorted on. */
+  dueDate: TS | null;
+  dueDateOnly: string | null;
+  dueDateBasis: DueDateBasis;
+  condition: string | null;
+  origin: Origin;
+  analysisId: string | null;
+  analysisItemId: string | null;
+  sourceRef: SourceRef | null;
+  createdBy: string;
+  createdAt: TS;
+  updatedAt: TS;
+  completedAt: TS | null;
+};
+
+export type EventDoc<TS> = CaseScoped & {
+  type: EventType;
+  title: string;
+  /** Null until someone confirms the date (dateStatus 'needs_review'). */
+  eventDate: TS | null;
+  eventDateOnly: string | null;
+  dateStatus: DateStatus;
+  /** The date as written in the source document. */
+  dateText: string | null;
+  origin: Origin;
+  analysisId: string | null;
+  analysisItemId: string | null;
+  sourceRef: SourceRef | null;
+  createdBy: string;
+  createdAt: TS;
+  verifiedBy: string | null;
+  verifiedAt: TS | null;
 };

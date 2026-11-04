@@ -176,30 +176,37 @@ page references within about a minute. If not, apply the cut list before startin
 ## Day 4 — Review and approval
 
 **WEB**
-- [ ] ReviewWorkspace: split pane, source chip → jump to page → highlight quote.
-- [ ] Approve, edit and reject per item; bulk approve for items with no warnings.
-- [ ] Warnings for unverified citations, relative deadlines and conditional directions.
-- [ ] Date confirmation: a relative deadline needs a date entered by the reviewer, or stays null.
-- [ ] Role gating with `can()`: a viewer sees a read-only review.
+- [x] ReviewWorkspace: split pane, source chip → jump to page → highlight quote.
+- [x] Approve, edit and reject per item; bulk approve for items with no warnings.
+- [x] Warnings for unverified citations, relative deadlines and conditional directions.
+- [x] Date confirmation: a relative deadline needs a date entered by the reviewer, or stays null.
+- [x] Role gating with `can()`: a viewer sees a read-only review.
 
 **API**
-- [ ] `reviewAnalysis` as described in ARCHITECTURE §5.6:
-  - [ ] Hashed task and event IDs created with `tx.create`.
-  - [ ] Per-item decisions.
-  - [ ] Recompute `nextHearingDate`.
-  - [ ] One audit entry per decision.
-- [ ] `org.policy.paralegalCanApprove` honoured.
-- [ ] Function tests:
-  - [ ] Approving the same two items twice yields two tasks.
-  - [ ] A viewer gets `permission-denied`.
-  - [ ] Each decision writes an audit entry.
+- [x] `reviewAnalysis` as described in ARCHITECTURE §5.6:
+  - [x] Hashed task and event IDs created with `tx.create`.
+  - [x] Per-item decisions.
+  - [x] Recompute `nextHearingDate`.
+  - [x] One audit entry per decision.
+- [x] `org.policy.paralegalCanApprove` honoured.
+- [x] Function tests:
+  - [x] Approving the same two items twice yields two tasks.
+  - [x] A viewer gets `permission-denied`.
+  - [x] Each decision writes an audit entry.
 
 **AI**
-- [ ] Tune `extract.v1` on the conditional-direction and relative-deadline fixtures.
-- [ ] Eval runner v0 over the `evals/` fixtures, including the prompt-injection file.
+- [x] Tune extraction on conditional directions and relative deadlines. The live run handled both;
+      the one slip (a due date taken from the hearing date) is now blocked in code, so the prompt
+      stays at `extract.v1`.
+- [x] Eval runner v0 (`functions/evals`, `npm run eval -w @casepilot/functions`): sample order,
+      prompt injection, no dates, garbled text, Hindi. Needs `ANTHROPIC_API_KEY`; not yet run.
 
 **Done when** a lawyer can approve, edit and reject suggestions, and approved items appear as tasks
 and events.
+
+> **Status, 4 Nov 2026:** done and deployed. 9 review integration tests (29 in all) cover
+> viewer refusal, task and event creation, the next-hearing update, replay safety, edits,
+> rejections, invalid dates and assignees, completion and auditing.
 
 ---
 

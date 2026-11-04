@@ -25,6 +25,7 @@ export function toReviewItems(
       decision: 'pending' as const,
       decidedBy: null,
       decidedAt: null,
+      edits: null,
       resultEntityId: null,
     }));
 

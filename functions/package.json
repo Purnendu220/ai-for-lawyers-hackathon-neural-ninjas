@@ -8,7 +8,8 @@
     "build": "node build.mjs",
     "build:watch": "node build.mjs --watch",
     "typecheck": "tsc -p tsconfig.json",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "eval": "vitest run --config vitest.eval.config.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.4.0",

@@ -22,7 +22,11 @@ export const paths = {
   analysis: (orgId: string, caseId: string, analysisId: string) =>
     `organizations/${orgId}/cases/${caseId}/analyses/${analysisId}`,
   tasks: (orgId: string, caseId: string) => `organizations/${orgId}/cases/${caseId}/tasks`,
+  task: (orgId: string, caseId: string, taskId: string) =>
+    `organizations/${orgId}/cases/${caseId}/tasks/${taskId}`,
   events: (orgId: string, caseId: string) => `organizations/${orgId}/cases/${caseId}/events`,
+  event: (orgId: string, caseId: string, eventId: string) =>
+    `organizations/${orgId}/cases/${caseId}/events/${eventId}`,
   messages: (orgId: string, caseId: string) => `organizations/${orgId}/cases/${caseId}/messages`,
 };
 

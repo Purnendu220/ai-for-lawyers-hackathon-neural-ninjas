@@ -11,8 +11,9 @@ Hackathon team repository for Neural Ninjas - [hackindia-team:ai-for-lawyers-hac
 
 > **Live app:** https://casepilot-neural-ninjas.web.app
 >
-> **Status:** in development. Days 1–2 of 8 are done and deployed: sign-in, workspaces, roles, the
-> installable PWA shell, case management and team invitations. See [Features](#features) for what works today and the
+> **Status:** in development. Days 1–4 of 8 are done and deployed: sign-in, workspaces, roles, the
+> installable PWA shell, case management, team invitations, court-order upload, Claude analysis
+> with checked citations, and lawyer review. See [Features](#features) for what works today and the
 > [implementation plan](docs/IMPLEMENTATION_PLAN.md) for what comes next.
 
 ---
@@ -79,7 +80,7 @@ and confirming inferred deadlines without a lawyer.
 | Team | Invite by private link, verified-email acceptance, role changes, suspension | ✅ Built |
 | Private document upload | PDF and DOCX up to 15 MB, file-signature checked, private storage | ✅ Built |
 | AI summary and extraction | Directions, dates, facts and proposed tasks, with page citations checked against the text | ✅ Built |
-| Human review | Side-by-side PDF and findings; approve, edit or reject each item | Day 4 |
+| Human review | Side-by-side PDF and findings; approve, edit or reject each item; bulk-approve items without warnings | ✅ Built |
 | Tasks and timeline | Kanban and list views, verified hearing dates, overdue flags | Day 5 |
 | Dashboard | Upcoming hearings, urgent tasks, recent activity | Day 5 |
 | Case copilot | Questions about the case files, answered with document and page references | Day 6 |
@@ -239,7 +240,8 @@ To use your own project instead, create one with Firestore in `asia-south1`, put
 | `npm run lint` | ESLint across the repo |
 | `npm test` | Unit tests |
 | `npm run test:rules` | Security-rules tests against the Firestore emulator |
-| `npm run test:integration` | Cloud Functions tests against the Auth, Firestore and Functions emulators |
+| `npm run test:integration` | Cloud Functions tests against the Auth, Firestore, Functions, Storage and Tasks emulators |
+| `npm run eval -w @casepilot/functions` | Live prompt evaluation on synthetic orders (needs `ANTHROPIC_API_KEY`; calls Claude) |
 | `npm run deploy` | Deploy everything to Firebase |
 | `npm run deploy:web` | Build and deploy only the web app |
 | `npm run deploy:rules` | Deploy only the Firestore rules and indexes |

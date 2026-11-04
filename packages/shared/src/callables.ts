@@ -8,6 +8,7 @@ import {
   StartUploadOutput,
 } from './schemas/document';
 import { CreateOrganizationInput, CreateOrganizationOutput } from './schemas/org';
+import { ReviewAnalysisInput, ReviewAnalysisOutput } from './schemas/review';
 import {
   AcceptInvitationOutput,
   InvitationRef,
@@ -31,6 +32,7 @@ export const callables = {
   archiveCase: { input: ArchiveCaseInput, output: OkOutput },
   startUpload: { input: StartUploadInput, output: StartUploadOutput },
   analyzeDocument: { input: DocumentRef, output: AnalyzeDocumentOutput },
+  reviewAnalysis: { input: ReviewAnalysisInput, output: ReviewAnalysisOutput },
 } as const;
 
 export type CallableName = keyof typeof callables;

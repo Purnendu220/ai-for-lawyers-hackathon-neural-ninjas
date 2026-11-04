@@ -13,4 +13,5 @@ export * from './schemas/org';
 export * from './schemas/case';
 export * from './schemas/team';
 export * from './schemas/document';
+export * from './schemas/review';
 export * from './schemas/extraction';

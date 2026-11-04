@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import { Archive, CalendarClock, FileText, Pencil } from 'lucide-react';
+import { Archive, CalendarClock, Pencil } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router';
 import { toast } from 'sonner';
 import {
   can,
@@ -30,6 +29,7 @@ import { errorMessage } from '@/lib/errors';
 import { useOnline } from '@/pwa/online';
 import { useCase } from './case-context';
 import { CaseForm } from './CaseForm';
+import { CourtDirections } from './CourtDirections';
 import type { Case } from './useCases';
 
 function toFormValues(kase: Case): CaseFormValues {
@@ -156,20 +156,7 @@ export default function CaseOverviewPage() {
           </Card>
         )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <FileText className="size-4" aria-hidden />
-              Court directions
-            </CardTitle>
-            <CardDescription>
-              Directions from reviewed court orders appear here.{' '}
-              <Link to="../documents" relative="path" className="text-primary underline-offset-4 hover:underline">
-                Upload an order
-              </Link>
-            </CardDescription>
-          </CardHeader>
-        </Card>
+        <CourtDirections caseId={kase.id} />
 
         {canWrite && <ArchiveCard orgId={orgId} kase={kase} />}
       </div>
