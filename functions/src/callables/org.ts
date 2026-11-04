@@ -12,6 +12,7 @@ import {
 import { audit } from '../core/audit';
 import { requireAuth } from '../core/authz';
 import { callableOptions, db } from '../core/firebase';
+import { profileWithMembership } from '../core/profile';
 import { parseInput } from '../core/validate';
 
 /** Creates a workspace with the caller as owner. A solo advocate is a one-member organization. */
@@ -31,7 +32,13 @@ export const createOrganization = onCall(
       if (Object.keys(existing?.memberships ?? {}).length >= MAX_ORGS_PER_USER) {
         throw new HttpsError('resource-exhausted', 'You have reached the workspace limit.');
       }
-      const displayName = existing?.displayName || user.displayName || user.email || '';
+      const profile = profileWithMembership(
+        user,
+        existing,
+        orgRef.id,
+        { orgName: input.name, role: 'owner' },
+        input.defaultLanguage,
+      );
 
       tx.create(orgRef, {
         name: input.name,
@@ -46,23 +53,12 @@ export const createOrganization = onCall(
       tx.create(memberRef, {
         role: 'owner',
         status: 'active',
-        displayName,
+        displayName: profile.displayName,
         email: user.email,
         joinedAt: FieldValue.serverTimestamp(),
       });
 
-      tx.set(
-        userRef,
-        {
-          displayName,
-          email: user.email,
-          ...(existing ? {} : { createdAt: FieldValue.serverTimestamp() }),
-          ...(existing?.preferences ? {} : { preferences: { language: input.defaultLanguage } }),
-          memberships: { [orgRef.id]: { orgName: input.name, role: 'owner' } },
-          lastActiveOrgId: orgRef.id,
-        },
-        { merge: true },
-      );
+      tx.set(userRef, profile, { merge: true });
 
       audit(tx, { uid: user.uid, orgId: orgRef.id }, {
         action: 'org.created',

@@ -71,6 +71,13 @@ export const ROLE_LABELS: Record<Role, string> = {
   viewer: 'Viewer',
 };
 
+export const CASE_STATUS_LABELS: Record<CaseStatus, string> = {
+  active: 'Active',
+  pending: 'Pending',
+  closed: 'Closed',
+  archived: 'Archived',
+};
+
 export const WORKSPACE_TYPE_LABELS: Record<WorkspaceType, string> = {
   solo: 'Solo advocate',
   law_firm: 'Law firm',

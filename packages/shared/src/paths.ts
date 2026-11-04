@@ -6,6 +6,8 @@ export const paths = {
   members: (orgId: string) => `organizations/${orgId}/members`,
   member: (orgId: string, uid: string) => `organizations/${orgId}/members/${uid}`,
   invitations: (orgId: string) => `organizations/${orgId}/invitations`,
+  invitation: (orgId: string, inviteId: string) =>
+    `organizations/${orgId}/invitations/${inviteId}`,
   auditLogs: (orgId: string) => `organizations/${orgId}/auditLogs`,
   jobs: (orgId: string) => `organizations/${orgId}/jobs`,
   job: (orgId: string, jobId: string) => `organizations/${orgId}/jobs/${jobId}`,

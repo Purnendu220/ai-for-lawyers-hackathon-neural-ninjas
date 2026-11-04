@@ -23,8 +23,13 @@ export default defineConfig([
     languageOptions: { globals: globals.serviceworker },
   },
   {
-    files: ['functions/**/*.{ts,mjs}', 'tests/**/*.ts', '**/*.config.{ts,js}'],
+    files: ['functions/**/*.{ts,mjs}', 'tests/**/*.ts', 'seed/**/*.mjs', '**/*.config.{ts,js}'],
     languageOptions: { globals: globals.node },
+  },
+  {
+    // Emulator REST responses are loosely typed JSON.
+    files: ['tests/**/*.ts'],
+    rules: { '@typescript-eslint/no-explicit-any': 'off' },
   },
   {
     rules: {

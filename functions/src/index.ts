@@ -2,3 +2,5 @@
 import './core/firebase';
 
 export { createOrganization } from './callables/org';
+export { acceptInvitation, inviteMember, revokeInvitation, updateMember } from './callables/team';
+export { archiveCase, createCase, updateCase } from './callables/cases';

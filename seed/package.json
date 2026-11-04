@@ -1,0 +1,13 @@
+{
+  "name": "@casepilot/seed",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate-samples": "node samples/generate.mjs"
+  },
+  "devDependencies": {
+    "fflate": "^0.8.3",
+    "pdf-lib": "^1.17.1"
+  }
+}

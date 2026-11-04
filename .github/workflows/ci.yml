@@ -33,3 +33,6 @@ jobs:
 
       - name: Security rules tests
         run: npm run test:rules
+
+      - name: Function integration tests
+        run: npm run test:integration

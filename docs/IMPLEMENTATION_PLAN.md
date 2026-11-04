@@ -48,10 +48,10 @@ apply the [cut list](#cut-list).
   - [x] Shared `tsconfig`, ESLint, Prettier.
   - [x] GitHub Actions running typecheck, lint, tests, build and rules tests.
 - [ ] **Synthetic documents.**
-  - [ ] Turn the blueprint §9 sample order into a PDF and a DOCX.
+  - [x] Turn the blueprint §9 sample order into a PDF and a DOCX (`seed/samples`).
   - [ ] Write the eval variants: conditional direction, relative deadline, prompt injection,
         Hindi order, blank page.
-  - [ ] Stamp every file "FICTIONAL SAMPLE".
+  - [x] Stamp every file "FICTIONAL SAMPLE".
 - [ ] **PWA assets.**
   - [x] App icons at 64, 192, 512 and maskable 512, generated from `apps/web/public/logo.svg`.
   - [ ] Two install screenshots.
@@ -104,33 +104,38 @@ dashboard. Chrome offers to install the app. Reloading while offline shows the a
 ## Day 2 — Cases and team
 
 **WEB**
-- [ ] `useLiveQuery` for collections in `lib/live.ts`, next to the existing `useLiveDoc`.
-- [ ] Cases list: live, with client-side search and filters for status, court and assigned lawyer.
-- [ ] New and edit case forms (React Hook Form + shared Zod schemas). Archive action.
-- [ ] Case layout with header and tabs. Overview page.
-- [ ] Team page:
-  - [ ] Member list.
-  - [ ] Invite dialog that shows the link.
-  - [ ] Role change.
-  - [ ] `/invite/:orgId/:inviteId` accept flow.
-- [ ] Org switcher.
+- [x] `useLiveQuery` for collections in `lib/live.ts`, next to the existing `useLiveDoc`.
+- [x] Cases list: live, with client-side search and filters for status, court and assigned lawyer.
+- [x] New and edit case forms (React Hook Form + shared Zod schemas). Archive action.
+- [x] Case layout with header and tabs. Overview page.
+- [x] Team page:
+  - [x] Member list.
+  - [x] Invite dialog that shows the link.
+  - [x] Role change.
+  - [x] `/invite/:orgId/:inviteId` accept flow.
+- [x] Org switcher.
 
 **API**
-- [ ] `createCase`, `updateCase`, `archiveCase`, `inviteMember`, `acceptInvitation`,
-      `updateMember`.
-- [ ] Rules for cases, members and invitations, with client writes denied.
-- [ ] `firestore.indexes.json` with every index from ARCHITECTURE §7. Deploy now, because builds
+- [x] `createCase`, `updateCase`, `archiveCase`, `inviteMember`, `revokeInvitation`,
+      `acceptInvitation`, `updateMember`. Every callable rejects signed-out callers first.
+- [x] Rules for cases, members and invitations, with client writes denied.
+- [x] `firestore.indexes.json` with every index from ARCHITECTURE §7. Deploy now, because builds
       take time.
-- [ ] Rules tests: Org B cannot read Org A's case; a viewer cannot write; a client write to `cases`
+- [x] Rules tests: Org B cannot read Org A's case; a viewer cannot write; a client write to `cases`
       is denied.
 
 **AI**
-- [ ] `validateFile`: PDF and DOCX signatures, encrypted PDF, zip-bomb cap.
-- [ ] `extractPdf` (`unpdf`, per page), `extractDocx` (`mammoth`, sections) and the chunker.
-- [ ] Unit tests on the synthetic files.
+- [x] `validateFile`: PDF and DOCX signatures, encrypted PDF, zip-bomb cap.
+- [x] `extractPdf` (`unpdf`, per page), `extractDocx` (`mammoth`, sections) and the chunker.
+- [x] Unit tests on the synthetic files (`seed/samples`: the blueprint §9 order as PDF and DOCX,
+      plus a blank PDF).
 
 **Done when** cases can be created, edited and archived; a second organization cannot see them,
 with the rules tests passing; and an invite can be sent and accepted.
+
+> **Status, 4 Nov 2026:** done. 12 rules tests and 13 function integration tests
+> (`npm run test:integration`) cover the flows above against the emulators. Deployed to
+> `casepilot-neural-ninjas`.
 
 ---
 

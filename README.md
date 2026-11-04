@@ -11,8 +11,8 @@ Hackathon team repository for Neural Ninjas - [hackindia-team:ai-for-lawyers-hac
 
 > **Live app:** https://casepilot-neural-ninjas.web.app
 >
-> **Status:** in development. Day 1 of 8 is done and deployed: sign-in, workspaces, roles and the
-> installable PWA shell. See [Features](#features) for what works today and the
+> **Status:** in development. Days 1–2 of 8 are done and deployed: sign-in, workspaces, roles, the
+> installable PWA shell, case management and team invitations. See [Features](#features) for what works today and the
 > [implementation plan](docs/IMPLEMENTATION_PLAN.md) for what comes next.
 
 ---
@@ -75,8 +75,9 @@ and confirming inferred deadlines without a lawyer.
 | Installable app (PWA) | Installs on Android, desktop and iOS; app shell loads offline; update prompt | ✅ Built |
 | Trusted devices | Case data is cached for offline reading only on devices the user trusts; signing out wipes it | ✅ Built |
 | Audit trail | Every change is recorded with who made it, in the same transaction | ✅ Backend built |
-| Case management | Create, edit, archive and search cases; assign lawyers; invite the team | Day 2 |
-| Private document upload | PDF and DOCX up to 15 MB, file-signature checked, private storage | Day 3 |
+| Case management | Create, edit, archive and search cases; filter by status, court and lawyer; assign lawyers | ✅ Built |
+| Team | Invite by private link, verified-email acceptance, role changes, suspension | ✅ Built |
+| Private document upload | PDF and DOCX up to 15 MB, file-signature checked, private storage | Day 3 (file checks and text extraction built) |
 | AI summary and extraction | Directions, dates, facts and proposed tasks, with page citations | Day 3 |
 | Human review | Side-by-side PDF and findings; approve, edit or reject each item | Day 4 |
 | Tasks and timeline | Kanban and list views, verified hearing dates, overdue flags | Day 5 |
@@ -154,7 +155,9 @@ Full design: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Build schedule:
 ├─ apps/web/            React PWA
 ├─ functions/           Cloud Functions (bundled with esbuild)
 ├─ packages/shared/     Zod schemas, enums, permissions, paths, date helpers
+├─ seed/               Fictional sample court orders and their generator
 ├─ tests/rules/         Firestore security-rules tests
+├─ tests/integration/   Cloud Functions tests against the emulators
 ├─ docs/                Architecture and implementation plan
 ├─ firebase.json        Hosting, Functions, emulators
 ├─ firestore.rules      Firestore security rules
@@ -216,6 +219,7 @@ To use your own project instead, create one with Firestore in `asia-south1`, put
 | `npm run lint` | ESLint across the repo |
 | `npm test` | Unit tests |
 | `npm run test:rules` | Security-rules tests against the Firestore emulator |
+| `npm run test:integration` | Cloud Functions tests against the Auth, Firestore and Functions emulators |
 | `npm run deploy` | Deploy everything to Firebase |
 | `npm run deploy:web` | Build and deploy only the web app |
 | `npm run deploy:rules` | Deploy only the Firestore rules and indexes |
@@ -228,6 +232,9 @@ To use your own project instead, create one with Firestore in `asia-south1`, put
 - **"Could not start Firestore Emulator, port taken"**: an emulator from an earlier run is still
   alive. On Windows, end the leftover `java.exe` running `cloud-firestore-emulator` in Task Manager.
   Firestore runs on port 8180, not the default 8080, because 8080 is often blocked on Windows.
+- **"Cannot find module '@rolldown/binding-…'" or a missing `@esbuild/…` package** after
+  `npm install <package>`: an npm bug pruned the native binaries. Delete `node_modules` and
+  `package-lock.json`, then run `npm install` once.
 - **The first callable request times out locally**: on some Windows machines the function worker
   takes 30 seconds or more to start the first time. Retry once it has warmed up.
 

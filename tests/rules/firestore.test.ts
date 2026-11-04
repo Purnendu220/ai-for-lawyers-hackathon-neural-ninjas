@@ -103,6 +103,21 @@ describe('all writes go through Cloud Functions', () => {
     );
   });
 
+  it('shows invitations to owners and admins only, and never lets clients write them', async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'organizations/orgA/invitations/inv1'), {
+        email: 'new@example.test',
+        role: 'lawyer',
+        status: 'pending',
+      });
+    });
+    await assertSucceeds(getDoc(doc(as('alice'), 'organizations/orgA/invitations/inv1')));
+    await assertFails(getDoc(doc(as('victor'), 'organizations/orgA/invitations/inv1')));
+    await assertFails(
+      updateDoc(doc(as('alice'), 'organizations/orgA/invitations/inv1'), { status: 'accepted' }),
+    );
+  });
+
   it('shows audit logs to owners but not viewers', async () => {
     await assertSucceeds(getDoc(doc(as('alice'), 'organizations/orgA/auditLogs/log1')));
     await assertFails(getDoc(doc(as('victor'), 'organizations/orgA/auditLogs/log1')));
