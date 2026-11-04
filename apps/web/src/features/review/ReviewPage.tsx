@@ -41,6 +41,7 @@ import { errorMessage } from '@/lib/errors';
 import { useLiveDoc } from '@/lib/live';
 import { useOnline } from '@/pwa/online';
 import { ItemReview } from './ItemReview';
+import { SummaryText } from './SummaryText';
 import { BASIS_LABELS, DATE_TYPE_LABELS, PRIORITY_LABELS } from './labels';
 import { itemWarnings, type ReviewItem } from './review-logic';
 
@@ -235,7 +236,7 @@ export default function ReviewPage() {
               <CardTitle className="text-base">Summary</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-3 text-sm">
-              <p>{data.summary}</p>
+              <SummaryText analysis={data} />
               <dl className="grid grid-cols-[8rem_1fr] gap-y-1">
                 <dt className="text-muted-foreground">Court</dt>
                 <dd>{data.caseDetails.courtName ?? '—'}</dd>

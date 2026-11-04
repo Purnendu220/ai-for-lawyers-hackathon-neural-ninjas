@@ -17,6 +17,7 @@ function readRecordings(file: string | undefined): Record<string, unknown> {
  */
 function recording(provider: AiProvider, file: string): AiProvider {
   return {
+    ...provider,
     async extract(request) {
       const result = await provider.extract(request);
       if (result.mode === 'live') {

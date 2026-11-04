@@ -518,7 +518,8 @@ reviewed orders". One review is far below the 500-write transaction limit.
 1. Authorize and check the quota.
 2. Load `chunks.json` for every `ready` document in the case. Cache it in instance memory, keyed by
    `documentId + updatedAt`.
-3. Retrieve the top 8 chunks with MiniSearch (BM25). Its Unicode tokenizer handles Devanagari.
+3. Retrieve the top 8 chunks with a small built-in BM25 ranker; tokens are Unicode letters, marks
+   and digits, so Devanagari works.
    Keyword search cannot match a Hindi question to English text, so a Hindi question is first
    translated to English for retrieval only.
 4. Send Prompt C (blueprint §8) with excerpts labelled `[chunk:{chunkId} doc:{documentId} page:{n}]`.
@@ -558,9 +559,9 @@ functions/src/ai/
 ├─ provider.ts          interface AiProvider { extract(); answer(); planActions(); translate(); }
 ├─ anthropic.ts         Claude implementation (Anthropic SDK)
 ├─ fixture.ts           replays recorded outputs (tests, emulator, demo fallback)
-├─ prompts/             extract.v1.ts · copilot.v1.ts · actionPlan.v1.ts · translate.v1.ts
+├─ prompts/             extract.v1.ts · copilot.v2.ts · translate.v1.ts
 ├─ citations.ts         quote verification (§6.2)
-└─ retrieval.ts         MiniSearch index over chunks
+└─ retrieval.ts         BM25 ranking over chunks (no dependency)
 ```
 
 - **Provider and model.** `AI_MODE=fixture` replays recordings (emulator and tests); otherwise

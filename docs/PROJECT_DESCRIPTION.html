@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CasePilot AI — Project Description</title>
+<meta name="description" content="CasePilot AI turns a court order into a reviewable action plan for Indian advocates, law firms and corporate legal teams. Hackathon project description, Team Neural Ninjas.">
+<style>
+  :root {
+    --ink: #1f2328;
+    --quiet: #57606a;
+    --rule: #d8dee4;
+    --panel: #f6f8fa;
+    --accent: #1f6feb;
+    --accent-tint: #e3edfd;
+    --good: #1a7f37;
+    --good-tint: #dafbe1;
+    --next: #9a6700;
+    --next-tint: #fff8c5;
+    --bg: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  main { max-width: 840px; margin: 0 auto; padding: 48px 16px 80px; }
+  header.doc-head { margin-bottom: 32px; }
+  h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .byline { color: var(--quiet); margin: 0; }
+  h2 {
+    font-size: 1.45rem; line-height: 1.3;
+    margin: 56px 0 12px; padding-top: 20px;
+    border-top: 1px solid var(--rule);
+  }
+  h3 { font-size: 1.08rem; margin: 28px 0 8px; }
+  p { margin: 0 0 14px; }
+  ul, ol { margin: 0 0 16px; padding-left: 1.4em; }
+  li { margin: 4px 0; }
+  a { color: var(--accent); }
+  strong { font-weight: 600; }
+  .lead { font-size: 1.08rem; }
+  .tagline { font-weight: 600; }
+  nav.toc {
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 8px;
+    padding: 16px 20px; margin: 0 0 8px;
+  }
+  nav.toc h2 { border: 0; margin: 0 0 8px; padding: 0; font-size: 1rem; }
+  nav.toc ol { columns: 2; column-gap: 32px; margin: 0; }
+  nav.toc li { break-inside: avoid; }
+  .table-wrap { overflow-x: auto; margin: 16px 0 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; line-height: 1.45; }
+  th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+  thead th { background: var(--panel); font-weight: 600; border-bottom: 2px solid var(--rule); }
+  table.kv th { width: 34%; background: var(--panel); font-weight: 600; }
+  .pill {
+    display: inline-block; padding: 1px 8px; border-radius: 999px;
+    font-size: 0.8rem; font-weight: 600; white-space: nowrap;
+  }
+  .pill.built { background: var(--good-tint); color: var(--good); }
+  .pill.next { background: var(--next-tint); color: var(--next); }
+  blockquote {
+    margin: 16px 0; padding: 12px 16px;
+    border-left: 4px solid var(--accent); background: var(--panel); border-radius: 0 8px 8px 0;
+  }
+  blockquote p { margin: 0; }
+  figure { margin: 24px 0; }
+  figure svg { display: block; width: 100%; height: auto; font-family: inherit; }
+  figcaption { color: var(--quiet); font-size: 0.92rem; margin-top: 8px; }
+  code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.9em; background: var(--panel); padding: 1px 4px; border-radius: 4px; }
+  @media (max-width: 600px) {
+    h1 { font-size: 1.7rem; }
+    nav.toc ol { columns: 1; }
+  }
+  @media print {
+    main { max-width: none; padding: 0; }
+    h2 { break-after: avoid; }
+    h3 { break-after: avoid; }
+    figure, tr, blockquote { break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+    .table-wrap { overflow: visible; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header class="doc-head">
+  <h1>CasePilot AI — Project Description</h1>
+  <p class="byline">Team Neural Ninjas · 4 November 2026</p>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#at-a-glance">Project at a glance</a></li>
+    <li><a href="#problem">The problem</a></li>
+    <li><a href="#objectives">Objectives</a></li>
+    <li><a href="#who">Who it is for</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Key features</a></li>
+    <li><a href="#responsible-ai">Responsible AI by design</a></li>
+    <li><a href="#architecture">Technical architecture</a></li>
+    <li><a href="#security">Security and privacy</a></li>
+    <li><a href="#status">Current status and roadmap</a></li>
+    <li><a href="#impact">Impact and how we measure it</a></li>
+    <li><a href="#demo">Demo walkthrough</a></li>
+  </ol>
+</nav>
+
+<!-- 1 -->
+<section id="at-a-glance">
+<h2>Project at a glance</h2>
+<p class="lead">CasePilot AI turns a court order into a reviewable action plan (36 seconds in our first live test), and nothing enters the case until a lawyer approves it. It is an AI-powered case management app for Indian advocates, law firms and corporate legal teams.</p>
+<p><span class="tagline">Tagline:</span> Less paperwork. Smarter case management. Never miss a critical task.</p>
+<div class="table-wrap">
+<table class="kv">
+  <tbody>
+    <tr><th scope="row">Team</th><td>Neural Ninjas</td></tr>
+    <tr><th scope="row">Hackathon track</th><td>AI for Lawyers</td></tr>
+    <tr><th scope="row">Live app</th><td><a href="https://casepilot-neural-ninjas.web.app">casepilot-neural-ninjas.web.app</a></td></tr>
+    <tr><th scope="row">Built with</th><td>React, Firebase (Mumbai region), Cloud Functions, Claude by Anthropic</td></tr>
+    <tr><th scope="row">Form factor</th><td>Web app that installs on Android, iOS and desktop as a progressive web app (PWA)</td></tr>
+  </tbody>
+</table>
+</div>
+<p>A lawyer uploads an order as a PDF or Word file. CasePilot reads it and proposes what needs to happen next: a summary, the court's directions, every date and a list of suggested tasks. Each finding cites the page it came from and a short quote. The server then checks that the quote really appears on that page.</p>
+<p>The lawyer reviews each item side by side with the original document and approves, edits or rejects it. Approved items become tasks and timeline events that the team can assign, track and complete. Every action is recorded in an audit trail.</p>
+<p>Our core idea is simple: <strong>every document should become an actionable, verifiable workflow.</strong> Most legal AI tools stop at a summary or a chatbot answer. CasePilot connects document intelligence directly to case management, with three commitments built in:</p>
+<ul>
+  <li><strong>Source-linked.</strong> Every direction, date and fact points back to its page and quote.</li>
+  <li><strong>Human-approved.</strong> AI output is only ever a proposal. It never becomes a task or a hearing date on its own.</li>
+  <li><strong>Honest about uncertainty.</strong> A phrase like "within 14 days" is never silently turned into a confirmed deadline.</li>
+</ul>
+</section>
+
+<!-- 2 -->
+<section id="problem">
+<h2>The problem</h2>
+<p>Legal work in India runs on documents that tell people what to do next, but the instructions are buried in dense text and scattered across tools. A missed direction or a misread date can cost a client their case.</p>
+
+<h3>Where the work lives today</h3>
+<p>A typical advocate's matter is spread across:</p>
+<ul>
+  <li><strong>Court orders and judgments</strong> as PDFs, often downloaded from a court website or received over WhatsApp.</li>
+  <li><strong>A diary or register</strong> of hearing dates, kept on paper or in Excel.</li>
+  <li><strong>WhatsApp groups and email threads</strong> where juniors, clerks and clients ask "what's the next date?" and "what do we need to file?"</li>
+  <li><strong>Personal memory</strong>, which is the real system of record in many practices.</li>
+</ul>
+<p>None of these tools talk to each other. The order says what must happen; the diary says when; the team chat says who. Someone has to read every order, pull out each direction, work out the dates, and copy them into the other places by hand.</p>
+
+<h3>Why it goes wrong</h3>
+<p>A single interim order can carry several directions, each with its own responsible party and timeline. Consider this short, fictional example:</p>
+<ol>
+  <li>The plaintiff shall file its updated statement of account within 14 days.</li>
+  <li>The defendant may respond within 14 days <em>after service</em> of that statement.</li>
+  <li>The matter is listed on 15 December 2026.</li>
+  <li>Authorised representatives shall be present on the next date.</li>
+</ol>
+<p>Four lines produce three different kinds of obligation. One deadline is relative to the order date. One is conditional on an event that has not happened yet. One is a fixed hearing date. A busy lawyer handling dozens of matters can easily miss that the second deadline cannot be calculated until service is recorded, or treat the hearing date as the filing deadline.</p>
+<p>The risks multiply in firms and corporate legal teams. Work passes between partners, associates, paralegals and external counsel. Without one shared record, nobody can say with confidence which directions are complete, who owns each task, or whether a date was ever checked against the order.</p>
+
+<h3>Why existing tools fall short</h3>
+<ul>
+  <li><strong>Generic case diaries</strong> store dates someone typed in. They do not read the order, so the typing (and the errors) remain.</li>
+  <li><strong>Generic AI chatbots</strong> can summarise an order, but the summary is a dead end. It does not become tasks or calendar entries, and it rarely shows exactly where each claim came from.</li>
+  <li><strong>Unchecked AI output is dangerous in law.</strong> A model that invents a deadline, or quietly converts "within 14 days of service" into a fixed date, creates exactly the kind of error lawyers fear most.</li>
+</ul>
+<p>Lawyers do not need another place to store files. They need to know what each document means for their next action, and they need to be able to trust that answer.</p>
+</section>
+
+<!-- 3 -->
+<section id="objectives">
+<h2>Objectives</h2>
+<p>Our goal is to cut the time from "order received" to "team knows what to do" from hours of manual reading to minutes of review, without ever taking the lawyer out of the decision.</p>
+
+<h3>Product objectives</h3>
+<ol>
+  <li><strong>Turn documents into action.</strong> Every uploaded order should produce a structured summary, its directions, its dates and proposed tasks, ready for review.</li>
+  <li><strong>Make every AI claim verifiable.</strong> Each extracted item must cite a page and a quote that the server has checked against the document text. A citation that cannot be checked is flagged, never hidden.</li>
+  <li><strong>Keep the lawyer in control.</strong> No task, deadline or hearing date enters the case until an authorised person approves it. AI suggestions and approved work live in separate places.</li>
+  <li><strong>Handle uncertainty honestly.</strong> Relative deadlines stay unconfirmed until a lawyer enters a date. Conditional directions stay conditional. Unclear or missing text produces a warning.</li>
+  <li><strong>Give the team one shared record.</strong> Cases, documents, tasks, hearings and activity history in one workspace, with roles that match how Indian practices actually work.</li>
+  <li><strong>Protect confidential data.</strong> Separate workspaces per organisation, private storage, server-side permission checks and an audit trail from day one.</li>
+</ol>
+
+<h3>Hackathon definition of done</h3>
+<p>We set a concrete bar for the MVP before writing code:</p>
+<blockquote><p>A user can create a case, upload a sample court order, view an AI-generated summary with source references, review and approve suggested tasks, and track them from the case timeline. A second organisation cannot access any of those records.</p></blockquote>
+
+<h3>What we deliberately do not do</h3>
+<p>Some features would make a flashier demo but would undermine trust. We ruled them out on purpose:</p>
+<ul>
+  <li>Predicting court outcomes.</li>
+  <li>Giving legal advice or legal strategy.</li>
+  <li>Filing documents or sending legal notices automatically.</li>
+  <li>Confirming an inferred deadline without a lawyer.</li>
+  <li>Building a full Indian case-law research engine.</li>
+</ul>
+<p>CasePilot is a case coordinator, not a replacement for a lawyer's judgement.</p>
+</section>
+
+<!-- 4 -->
+<section id="who">
+<h2>Who it is for</h2>
+<p>CasePilot serves three kinds of legal practice from one app. A workspace type chosen at sign-up shapes the defaults, and the same data model scales from one advocate to a full legal department.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Workspace</th><th>Who</th><th>What they get</th></tr></thead>
+  <tbody>
+    <tr><td>Solo advocate</td><td>An individual advocate, perhaps with a clerk or junior</td><td>Personal matters, documents, hearing dates and follow-ups in one place, on a phone or laptop</td></tr>
+    <tr><td>Law firm</td><td>Partners, associates and paralegals</td><td>Shared case files, task assignment, a team calendar, and a record of who approved what</td></tr>
+    <tr><td>Corporate legal team</td><td>In-house counsel managing disputes, employment and regulatory matters</td><td>Internal owners for each matter, visibility across the portfolio, and an audit trail for compliance</td></tr>
+  </tbody>
+</table>
+</div>
+<p>A solo advocate is simply an organisation with one member. When they hire a junior, they invite them; nothing has to be migrated.</p>
+
+<h3>Roles inside a workspace</h3>
+<p>Every member has one of five roles. The same permission matrix is enforced by the server and used by the app to hide controls a person cannot use.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Role</th><th>Cases</th><th>Upload documents</th><th>Approve AI suggestions</th><th>Tasks and events</th><th>Manage team</th><th>Audit log</th></tr></thead>
+  <tbody>
+    <tr><td>Owner</td><td>Edit</td><td>Yes</td><td>Yes</td><td>Edit and verify dates</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Admin</td><td>Edit</td><td>Yes</td><td>Yes</td><td>Edit and verify dates</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Lawyer</td><td>Edit</td><td>Yes</td><td>Yes</td><td>Edit and verify dates</td><td>No</td><td>No</td></tr>
+    <tr><td>Paralegal</td><td>Read</td><td>Yes</td><td>Only if the firm allows it</td><td>Edit</td><td>No</td><td>No</td></tr>
+    <tr><td>Viewer</td><td>Read</td><td>No</td><td>No</td><td>Read</td><td>No</td><td>No</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Two choices here reflect real practice:</p>
+<ul>
+  <li><strong>Paralegals do much of the work but should not approve AI output by default.</strong> A firm-level setting lets a practice allow it.</li>
+  <li><strong>Only lawyers and above can verify a hearing date.</strong> A paralegal can add an event, but it stays marked "needs review" until a lawyer confirms it.</li>
+</ul>
+</section>
+
+<!-- 5 -->
+<section id="how">
+<h2>How it works</h2>
+<p>The core workflow takes a court order from upload to tracked tasks in six steps, and the lawyer's approval sits between the AI and the case.</p>
+
+<figure>
+<svg viewBox="0 0 760 520" role="img" aria-label="Nothing enters a case until a lawyer approves it" font-size="11.5">
+  <defs>
+    <marker id="wf-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8c959f"/></marker>
+  </defs>
+  <text x="24" y="30" font-size="15" font-weight="600" fill="#1f2328">Nothing enters a case until a lawyer approves it</text>
+  <text x="24" y="50" fill="#57606a">From court order to tracked work in eight steps</text>
+
+  <rect x="24" y="164" width="712" height="124" rx="8" fill="#f3f5f7" stroke="#8c959f" stroke-width="1"/>
+  <text x="720" y="186" text-anchor="end" font-weight="600" fill="#57606a">Automatic, in the background</text>
+
+  <g fill="none" stroke="#8c959f" stroke-width="1.25">
+    <path d="M117.5 144V200" marker-end="url(#wf-arrow)"/>
+    <path d="M195 236H215" marker-end="url(#wf-arrow)"/>
+    <path d="M370 236H390" marker-end="url(#wf-arrow)"/>
+    <path d="M545 236H565" marker-end="url(#wf-arrow)"/>
+    <path d="M642.5 272V312H117.5V360" marker-end="url(#wf-arrow)"/>
+    <path d="M195 396H302.5" marker-end="url(#wf-arrow)"/>
+    <path d="M457.5 396H565" marker-end="url(#wf-arrow)"/>
+    <path d="M117.5 432V464" marker-end="url(#wf-arrow)"/>
+  </g>
+
+  <g fill="#ffffff" stroke="#8c959f" stroke-width="1.25">
+    <rect x="40" y="72" width="155" height="72" rx="8"/>
+    <rect x="40" y="200" width="155" height="72" rx="8"/>
+    <rect x="215" y="200" width="155" height="72" rx="8"/>
+    <rect x="390" y="200" width="155" height="72" rx="8"/>
+    <rect x="565" y="200" width="155" height="72" rx="8"/>
+    <rect x="302.5" y="360" width="155" height="72" rx="8"/>
+    <rect x="565" y="360" width="155" height="72" rx="8"/>
+  </g>
+  <rect x="40" y="360" width="155" height="72" rx="8" fill="#e3edfd" stroke="#1f6feb" stroke-width="2"/>
+  <rect x="40" y="464" width="380" height="32" rx="8" fill="none" stroke="#8c959f" stroke-width="1.25" stroke-dasharray="4 4"/>
+
+  <g font-size="13" font-weight="600" fill="#1f2328">
+    <text x="56" y="96">1. Upload</text>
+    <text x="56" y="224">2. Validate file</text>
+    <text x="231" y="224">3. Extract text</text>
+    <text x="406" y="224">4. Claude reads</text>
+    <text x="581" y="224">5. Check quotes</text>
+    <text x="56" y="384">6. Lawyer reviews</text>
+    <text x="318.5" y="384">7. Tasks, events</text>
+    <text x="581" y="384">8. Team tracks</text>
+  </g>
+  <g fill="#57606a">
+    <text x="56" y="112">Lawyer or paralegal</text>
+    <text x="56" y="128">PDF or Word, 15 MB</text>
+    <text x="56" y="240">Real file signature</text>
+    <text x="56" y="256">Duplicate warning</text>
+    <text x="231" y="240">Page by page</text>
+    <text x="231" y="256">Blank pages flagged</text>
+    <text x="406" y="240">Directions, dates,</text>
+    <text x="406" y="256">facts, tasks, quotes</text>
+    <text x="581" y="240">Each quote searched</text>
+    <text x="581" y="256">on its cited page</text>
+    <text x="318.5" y="400">Created only from</text>
+    <text x="318.5" y="416">approved items</text>
+    <text x="581" y="400">Assign, complete,</text>
+    <text x="581" y="416">every step audited</text>
+    <text x="380" y="334" text-anchor="middle">saved as pending review</text>
+    <text x="248.75" y="388" text-anchor="middle">approve or edit</text>
+    <text x="125.5" y="452">reject</text>
+    <text x="56" y="484">Rejected items stay on the analysis and never become work</text>
+  </g>
+  <g fill="#1f2328">
+    <text x="56" y="400">Approve, edit or</text>
+    <text x="56" y="416">reject each item</text>
+  </g>
+</svg>
+<figcaption>Steps 2 to 5 run on their own. Step 6 is the gate where a person decides what becomes real work.</figcaption>
+</figure>
+
+<ol>
+  <li><strong>Upload.</strong> A lawyer or paralegal drops a PDF or Word file (up to 15 MB) onto a case. The file goes straight to private storage with a live progress bar.</li>
+  <li><strong>Validate.</strong> The server checks the file's real signature, not just its name or type, and rejects encrypted PDFs, oversized archives and anything that is not a genuine PDF or DOCX. It fingerprints the file (SHA-256) and warns if the same document was already uploaded to the case.</li>
+  <li><strong>Extract text.</strong> A background job pulls out the text page by page for PDFs and section by section for Word files, so every later citation can point to an exact page. Blank pages or pages with no readable text produce a warning instead of a silent gap.</li>
+  <li><strong>Analyse with Claude.</strong> A second background job sends the page-marked text to Claude with a strict output schema. Claude returns a summary, the case details, facts, the court's directions, every date with its type, and proposed tasks. Each item carries a page number and a short supporting quote. Up to the first 60 pages are analysed, and the app says so if a document is longer.</li>
+  <li><strong>Verify citations.</strong> Before anyone sees the result, the server searches the actual page text for every quote. A quote found on the cited page is marked verified. A quote found on a different page is verified with the page corrected. A quote that cannot be found is flagged for the reviewer.</li>
+  <li><strong>Review and approve.</strong> The lawyer sees the original PDF beside the findings. Clicking a source jumps to its page. Each item can be approved, edited or rejected, and items with no warnings can be approved in bulk. Only approved items become tasks or timeline events.</li>
+</ol>
+<p>From there, the work is ordinary case management, but grounded in the order:</p>
+<ul>
+  <li>Approved tasks appear on the case task board and in each person's cross-case task list, with owners, priorities, due dates and overdue flags.</li>
+  <li>Approved hearing dates appear on the case timeline and the firm calendar. The case's next hearing date updates automatically from verified hearings.</li>
+  <li>The dashboard shows upcoming hearings, urgent tasks, analyses waiting for review and recent activity.</li>
+  <li>Every approval, edit, rejection and completion lands in the audit trail.</li>
+</ul>
+<p>The whole document pipeline runs in the background. The lawyer can close the tab after uploading; the status chips update live when they come back.</p>
+</section>
+
+<!-- 6 -->
+<section id="features">
+<h2>Key features</h2>
+<p>Twelve features are built and deployed today; the case copilot and Hindi summaries are next.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Feature</th><th>What it does</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>Accounts and workspaces</td><td>Email or Google sign-in; one workspace per practice, firm or legal team; switch between workspaces</td><td><span class="pill built">Built</span></td></tr>
+    <tr><td>Roles and permissions</td><td>Owner, admin, lawyer, paralegal and viewer, enforced on the server for every action</td><td><span class="pill built">Built</span></td></tr>
+    <tr><td>Team management</td><td>Invite by private link; acceptance only by the invited, verified email; role changes and suspension</td><td><span class="pill built">Built</span></td></tr>
+    <tr><td>Case management</td><td>Create, edit, archive and search cases; filter by status, court and assigned lawyer</td><td><span class="pill built">Built</span></td></tr>
+    <tr><td>Private document upload</td><td>PDF and DOCX up to 15 MB, signature-checked, duplicate-detected, stored privately</td><td><span class="pill built">Built</span></td></tr>
+    <tr><td>AI summary and extraction</td><td>Summary, facts, directions, dates and proposed tasks, each with a checked page citation</td><td><span class="pill built">Built</span></td></tr>
+    <tr><td>Human review workspace</td><td>PDF beside the findings; click a source to jump to its page; approve, edit or reject each item; bulk-approve clean items</td><td><span class="pill built">Built</span></td></tr>
+    <tr><td>Tasks</td><td>Case task list and board; a cross-case "my tasks" view; owners, priorities, due dates and overdue flags</td><td><span class="pill built">Built</span></td></tr>
+    <tr><td>Timeline and calendar</td><td>Verified hearings and dates still to confirm, each styled differently; add, correct and verify events</td><td><span class="pill built">Built</span></td></tr>
+    <tr><td>Dashboard</td><td>Upcoming hearings, urgent tasks, reviews waiting and recent activity</td><td><span class="pill built">Built</span></td></tr>
+    <tr><td>Audit trail</td><td>Every change recorded with who made it, in the same transaction as the change; per-case activity feed</td><td><span class="pill built">Built</span></td></tr>
+    <tr><td>Installable app</td><td>Installs on Android, iOS and desktop; the app shell loads offline; prompts when an update is ready</td><td><span class="pill built">Built</span></td></tr>
+    <tr><td>Case copilot</td><td>Ask questions about the case files; answers cite document and page, or say the files do not establish the answer</td><td><span class="pill next">Next</span></td></tr>
+    <tr><td>Hindi summaries</td><td>Machine-translated summaries, clearly labelled as translations</td><td><span class="pill next">Next</span></td></tr>
+  </tbody>
+</table>
+</div>
+<p>Every date is stored consistently and shown in India Standard Time, so a hearing never shifts by a day because of a server's time zone.</p>
+</section>
+
+<!-- 7 -->
+<section id="responsible-ai">
+<h2>Responsible AI by design</h2>
+<p>We treat the AI as a fast, careful junior whose every claim must be checked, never as the decision-maker. Seven guardrails sit around the model, and most of them are enforced in code rather than left to the prompt.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Guardrail</th><th>How it works</th><th>Why it matters</th></tr></thead>
+  <tbody>
+    <tr><td>Structured output</td><td>Claude must return an object that matches a strict schema; the server validates it again before saving</td><td>Malformed or partial answers never reach a lawyer</td></tr>
+    <tr><td>Citation check</td><td>The server searches the real page text for each quote; found on the cited page is verified, found elsewhere is verified with the page corrected, not found is flagged</td><td>A lawyer can trust a green citation, and sees clearly which ones to check</td></tr>
+    <tr><td>Human approval</td><td>AI output is saved as a proposal; only an authorised reviewer's decision creates a task or event</td><td>The AI cannot change a case on its own</td></tr>
+    <tr><td>No invented deadlines</td><td>Relative periods such as "within 14 days" keep their basis but get no date; the lawyer enters it</td><td>The most dangerous legal-AI error is designed out</td></tr>
+    <tr><td>Conditional directions</td><td>A direction that depends on an event (for example, service) is marked conditional, with its condition stated</td><td>Conditional work is not mistaken for a fixed obligation</td></tr>
+    <tr><td>Untrusted input</td><td>The prompt tells the model to treat the document as data, and the server strips anything in the text that imitates a page marker</td><td>A document cannot redirect the AI or forge a citation to another page</td></tr>
+    <tr><td>Visible uncertainty</td><td>Unclear text, blank pages and pages not analysed produce warnings shown on the review screen</td><td>Gaps are surfaced, not filled with guesses</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>The citation check in detail</h3>
+<p>Models sometimes quote text that is close to, but not exactly, what the document says, or cite the wrong page. Our verifier normalises both sides (case, punctuation, curly quotes, line breaks) and then looks for the quote on the cited page. Quotes shorter than eight characters are never treated as proof, because they match too easily. The result is stored with each item, so the review screen can mark it verified, page-corrected or unverified.</p>
+
+<h3>Approval is idempotent</h3>
+<p>Review decisions are saved in a single transaction. Each approved item creates its task or event with an ID derived from the analysis and the item, so a double-click, a network retry or a replayed request can never create a duplicate task. Each decision also writes its own audit entry.</p>
+
+<h3>Measuring the model, not just trusting it</h3>
+<p>We keep a live evaluation suite of fictional orders that calls Claude and checks its raw output before our server guardrails are applied. That way it measures the prompt itself. It covers five cases:</p>
+<ol>
+  <li>The blueprint's sample order, with a conditional direction and a relative deadline.</li>
+  <li>An order containing an embedded instruction that tries to make the AI approve tasks and invent a payment direction.</li>
+  <li>An order with no dates at all.</li>
+  <li>Garbled text.</li>
+  <li>An order in Hindi.</li>
+</ol>
+<p>Every case also checks two rules: relative dates are never turned into calendar dates, and no due date is proposed unless the order states one. Every prompt has a version number, and each analysis records which prompt and model produced it.</p>
+
+<h3>Honest demos</h3>
+<p>If the live AI is unavailable during judging, the app can replay a recorded real run of the sample order. The replay carries a visible label in the app. We will not present replayed output as live, and we will not claim a task was created if the backend failed.</p>
+</section>
+
+<!-- 8 -->
+<section id="architecture">
+<h2>Technical architecture</h2>
+<p>CasePilot is a React progressive web app on a fully managed Firebase backend in Google Cloud's Mumbai region, with Claude doing the document analysis behind a narrow, swappable interface.</p>
+
+<figure>
+<svg viewBox="0 0 760 544" role="img" aria-label="All writes go through server functions; Claude only proposes" font-size="11.5">
+  <defs>
+    <marker id="ar-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8c959f"/></marker>
+  </defs>
+  <text x="24" y="30" font-size="15" font-weight="600" fill="#1f2328">All writes go through server functions; Claude only proposes</text>
+  <text x="24" y="50" fill="#57606a">Components and what calls what</text>
+
+  <rect x="24" y="72" width="168" height="448" rx="8" fill="none" stroke="#8c959f" stroke-width="1" stroke-dasharray="4 4"/>
+  <text x="40" y="94" font-weight="600" fill="#57606a">Browser or phone</text>
+  <rect x="216" y="72" width="344" height="448" rx="8" fill="#f3f5f7" stroke="#8c959f" stroke-width="1"/>
+  <text x="232" y="94" font-weight="600" fill="#57606a">Firebase, Mumbai region</text>
+
+  <g fill="none" stroke="#8c959f" stroke-width="1.25">
+    <path d="M176 132H232" marker-end="url(#ar-arrow)"/>
+    <path d="M176 212H232" marker-end="url(#ar-arrow)"/>
+    <path d="M176 300H232" marker-end="url(#ar-arrow)"/>
+    <path d="M176 380H232" marker-end="url(#ar-arrow)"/>
+    <path d="M310 248V264" marker-end="url(#ar-arrow)"/>
+    <path d="M388 380H404" marker-end="url(#ar-arrow)"/>
+    <path d="M474 352V300H388" marker-end="url(#ar-arrow)"/>
+    <path d="M544 388H600" marker-start="url(#ar-arrow)" marker-end="url(#ar-arrow)"/>
+    <path d="M474 448V424" stroke-dasharray="4 4" marker-end="url(#ar-arrow)"/>
+    <path d="M108 408V424" stroke-dasharray="2 3"/>
+  </g>
+
+  <g fill="#ffffff" stroke="#8c959f" stroke-width="1.25">
+    <rect x="40" y="104" width="136" height="304" rx="8"/>
+    <rect x="40" y="424" width="136" height="56" rx="8"/>
+    <rect x="232" y="104" width="156" height="56" rx="8"/>
+    <rect x="232" y="264" width="156" height="72" rx="8"/>
+    <rect x="232" y="352" width="156" height="56" rx="8"/>
+    <rect x="404" y="352" width="140" height="72" rx="8"/>
+    <rect x="404" y="448" width="140" height="56" rx="8"/>
+    <rect x="600" y="352" width="136" height="72" rx="8"/>
+  </g>
+  <rect x="232" y="176" width="156" height="72" rx="8" fill="#e3edfd" stroke="#1f6feb" stroke-width="2"/>
+
+  <g font-size="13" font-weight="600" fill="#1f2328">
+    <text x="56" y="128">React app</text>
+    <text x="56" y="448">Service worker</text>
+    <text x="248" y="128">Authentication</text>
+    <text x="248" y="200">Cloud Functions</text>
+    <text x="248" y="288">Firestore</text>
+    <text x="248" y="376">Cloud Storage</text>
+    <text x="420" y="376">Background jobs</text>
+    <text x="420" y="472">Secret Manager</text>
+    <text x="616" y="376">Claude API</text>
+  </g>
+  <g fill="#57606a">
+    <text x="56" y="144">Live screens</text>
+    <text x="56" y="160">Installable PWA</text>
+    <text x="56" y="464">App shell only</text>
+    <text x="248" y="144">Email or Google</text>
+    <text x="248" y="304">Live reads, guarded</text>
+    <text x="248" y="320">by security rules</text>
+    <text x="248" y="392">Private documents</text>
+    <text x="420" y="392">Validate, extract,</text>
+    <text x="420" y="408">analyse, verify</text>
+    <text x="420" y="488">Holds the API key</text>
+    <text x="616" y="392">Reads page text,</text>
+    <text x="616" y="408">returns proposals</text>
+    <text x="396" y="292">saved for review</text>
+  </g>
+  <g fill="#1f2328">
+    <text x="248" y="216">Every write: checks</text>
+    <text x="248" y="232">role, writes audit</text>
+  </g>
+</svg>
+<figcaption>The app reads Firestore directly under security rules, but every change goes through a Cloud Function. Claude sees only page text and returns proposals.</figcaption>
+</figure>
+
+<h3>Technology stack</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Layer</th><th>Technology</th></tr></thead>
+  <tbody>
+    <tr><td>Frontend</td><td>React 19, TypeScript, Vite, React Router, Tailwind CSS, shadcn/ui, TanStack Query, React Hook Form, Zod</td></tr>
+    <tr><td>Installable app</td><td>vite-plugin-pwa with our own Workbox service worker</td></tr>
+    <tr><td>Sign-in</td><td>Firebase Authentication (email and password, Google)</td></tr>
+    <tr><td>Backend</td><td>Cloud Functions for Firebase, 2nd generation, Node.js 24, TypeScript</td></tr>
+    <tr><td>Background jobs</td><td>Firebase task-queue functions (Cloud Tasks) with automatic retries</td></tr>
+    <tr><td>Database</td><td>Cloud Firestore, asia-south1 (Mumbai)</td></tr>
+    <tr><td>File storage</td><td>Cloud Storage for Firebase, asia-south1, private bucket</td></tr>
+    <tr><td>AI</td><td>Claude (claude-opus-5-5) through the Anthropic API, with structured outputs</td></tr>
+    <tr><td>Secrets and abuse control</td><td>Secret Manager for the API key; App Check, wired in with enforcement behind a switch; a per-organisation daily AI quota</td></tr>
+    <tr><td>Shared contracts</td><td>One package of Zod schemas, enums and the permission matrix, used by both frontend and backend</td></tr>
+    <tr><td>Quality</td><td>npm workspaces; GitHub Actions running typecheck, lint, unit tests, build and security-rules tests</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Design decisions worth noting</h3>
+<ul>
+  <li><strong>One authorisation path.</strong> Because all writes go through functions, there is exactly one place that enforces permissions, field allow-lists and auditing. Security rules simply deny client writes.</li>
+  <li><strong>Typed end to end.</strong> Every callable function's input and output is defined once as a Zod schema in the shared package. A contract change breaks the build on both sides instead of failing at runtime.</li>
+  <li><strong>Reliable background jobs.</strong> Each job has a deterministic ID, a claim with a time-limited lease, and a run counter. A retried or duplicated job cannot process a document twice, and a manual re-run gets a fresh job.</li>
+  <li><strong>Large text stays out of the database.</strong> Extracted page text and search chunks are stored as private files next to the original, keeping Firestore documents small and fast.</li>
+  <li><strong>Swappable AI.</strong> The model sits behind an <code>AiProvider</code> interface. A fixture provider replays recorded runs for tests, local development and the labelled demo fallback; the live provider calls Claude.</li>
+  <li><strong>Data residency.</strong> Firestore, Storage and Functions all run in asia-south1. This region is fixed at creation, so we set it on day zero.</li>
+</ul>
+</section>
+
+<!-- 9 -->
+<section id="security">
+<h2>Security and privacy</h2>
+<p>Legal files carry privileged communications, personal data and financial records, so we treated confidentiality as a product requirement from the first commit, not as a final polish step.</p>
+
+<h3>Isolation between organisations</h3>
+<p>Every case, document, task and log belongs to exactly one organisation. Firestore security rules allow a user to read an organisation's data only while they are an active member of it. The server checks membership again on every call, because server code bypasses the rules. Automated tests confirm that one organisation cannot read another's cases, and that cross-case queries for the task list and calendar return only permitted records.</p>
+
+<h3>Access control</h3>
+<ul>
+  <li>Roles are enforced on the server for every action, using the same permission matrix the app uses to hide controls.</li>
+  <li>Invitations can only be accepted by a signed-in user whose verified email matches the invitation.</li>
+  <li>An upload must match a reservation created by the server for that case. A user cannot write files into another case's folder or overwrite an existing file.</li>
+  <li>The Anthropic API key lives in Secret Manager and is used only by server functions. It never reaches the browser.</li>
+</ul>
+
+<h3>Untrusted files</h3>
+<p>Uploaded documents are treated as hostile until checked. The server verifies the real file signature, rejects encrypted PDFs and caps decompressed Word file size to stop archive bombs. Files that fail are deleted, and the user sees a plain-language reason.</p>
+
+<h3>Confidential data stays out of side channels</h3>
+<ul>
+  <li><strong>Logs and audit entries</strong> carry IDs, field names and status values only, never document text, quotes or case titles.</li>
+  <li><strong>The service worker</strong> caches only the app shell. Case data is cached for offline reading only on devices the user marks as trusted, and signing out wipes that cache.</li>
+  <li><strong>Documents</strong> are read through authenticated SDK calls, never through permanent public download links.</li>
+</ul>
+
+<h3>Auditability</h3>
+<p>Every significant action writes an audit entry in the same transaction as the change: uploads, analyses, each review decision, task and event changes, and team changes. If the change happens, its record exists; if the transaction fails, neither does. Owners and admins can read the full log, and each case shows its own activity feed.</p>
+
+<h3>Compliance in India</h3>
+<p>All data is stored in the Mumbai region. Before any real client data is used, a production launch would need a review of professional confidentiality duties, the Digital Personal Data Protection Act, 2023 and its rules, and the AI provider's data-use and retention terms. Until then, CasePilot runs only on fictional documents, and we make no claim that it is production-certified.</p>
+</section>
+
+<!-- 10 -->
+<section id="status">
+<h2>Current status and roadmap</h2>
+<p>Five of our eight planned build days are complete and deployed. The full MVP workflow, from upload through Claude analysis, lawyer review, tasks, timeline and dashboard, is covered by 93 automated tests.</p>
+
+<h3>What is built</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Stage</th><th>What shipped</th><th>Evidence</th></tr></thead>
+  <tbody>
+    <tr><td>Day 5: Tasks, timeline, dashboard</td><td>Task list and board, cross-case task list, timeline with verified and unconfirmed dates, calendar, live dashboard, activity feed</td><td>10 integration tests for tasks, events, paralegal limits and the activity feed</td></tr>
+    <tr><td>Day 4: Review and approval</td><td>Side-by-side review workspace; approve, edit, reject and bulk-approve; tasks and events created from approvals; next hearing date updated</td><td>9 integration tests, including viewer refusal and replay safety</td></tr>
+    <tr><td>Day 3: Upload to analysis</td><td>Private upload, file validation, page-by-page extraction, Claude analysis, citation verification, re-runs</td><td>7 integration tests; a live Claude run on the sample order took 36 s from upload to review, with all 16 citations verified</td></tr>
+    <tr><td>Day 2: Cases and team</td><td>Case create, edit, archive and search; invitations; role changes; workspace switcher</td><td>13 integration tests; security-rules tests for cross-organisation isolation</td></tr>
+    <tr><td>Day 1: Foundation</td><td>Sign-in, workspace creation, app shell, installable PWA, shared schemas, extraction prompt</td><td>Deployed to Firebase</td></tr>
+  </tbody>
+</table>
+</div>
+<p>In total: 39 integration tests run the Cloud Functions against the Firebase emulators, 13 tests check the security rules, and 41 unit tests cover dates, permissions, extraction schemas, file validation and citation matching. Continuous integration runs typecheck, lint, tests and build on every pull request, and also scans the built web app to confirm no API key was bundled into it.</p>
+
+<h3>What comes next</h3>
+<figure>
+<svg viewBox="0 0 760 356" role="img" aria-label="CasePilot grows from one order to the whole case" font-size="11.5">
+  <defs>
+    <marker id="rm-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8c959f"/></marker>
+  </defs>
+  <text x="24" y="30" font-size="15" font-weight="600" fill="#1f2328">CasePilot grows from one order to the whole case</text>
+  <text x="24" y="50" fill="#57606a">Roadmap in three phases, not to scale</text>
+  <line x1="24" y1="84" x2="730" y2="84" stroke="#8c959f" stroke-width="1.25" marker-end="url(#rm-arrow)"/>
+  <path d="M259 76L267 84L259 92L251 84z" fill="#1f6feb"/>
+  <text x="259" y="68" text-anchor="middle" font-weight="600" fill="#1f2328">Hackathon demo</text>
+
+  <rect x="24" y="104" width="228" height="228" rx="8" fill="#e3edfd" fill-opacity="0.7" stroke="#1f6feb" stroke-width="2"/>
+  <rect x="266" y="104" width="228" height="228" rx="8" fill="#ffffff" stroke="#8c959f" stroke-width="1.25"/>
+  <rect x="508" y="104" width="228" height="228" rx="8" fill="#ffffff" stroke="#8c959f" stroke-width="1.25"/>
+  <g stroke="#d8dee4">
+    <line x1="40" y1="164" x2="236" y2="164"/>
+    <line x1="282" y1="164" x2="478" y2="164"/>
+    <line x1="524" y1="164" x2="720" y2="164"/>
+  </g>
+  <g fill="#1f6feb">
+    <circle cx="46" cy="184" r="2.5"/><circle cx="46" cy="208" r="2.5"/><circle cx="46" cy="232" r="2.5"/>
+    <circle cx="46" cy="256" r="2.5"/><circle cx="46" cy="280" r="2.5"/><circle cx="46" cy="304" r="2.5"/>
+  </g>
+  <g fill="#8c959f">
+    <circle cx="288" cy="184" r="2.5"/><circle cx="288" cy="208" r="2.5"/><circle cx="288" cy="232" r="2.5"/>
+    <circle cx="288" cy="256" r="2.5"/><circle cx="288" cy="280" r="2.5"/><circle cx="288" cy="304" r="2.5"/>
+    <circle cx="530" cy="184" r="2.5"/><circle cx="530" cy="208" r="2.5"/><circle cx="530" cy="232" r="2.5"/>
+    <circle cx="530" cy="256" r="2.5"/><circle cx="530" cy="280" r="2.5"/><circle cx="530" cy="304" r="2.5"/>
+  </g>
+  <g fill="#57606a">
+    <text x="40" y="128">Now · Days 6–8</text>
+    <text x="282" y="128">Next · after the demo</text>
+    <text x="524" y="128">Later · toward production</text>
+  </g>
+  <g font-size="14" font-weight="600" fill="#1f2328">
+    <text x="40" y="150">Finish the hackathon</text>
+    <text x="282" y="150">Follow the whole case</text>
+    <text x="524" y="150">Grow the product</text>
+  </g>
+  <g fill="#1f2328">
+    <text x="56" y="188">Case copilot, cited answers</text>
+    <text x="56" y="212">Hindi summaries, labelled</text>
+    <text x="56" y="236">Security hardening and tests</text>
+    <text x="56" y="260">Seeded demo data and reset</text>
+    <text x="56" y="284">Rehearsed four-minute demo</text>
+    <text x="56" y="308">Measured eval results</text>
+
+    <text x="298" y="188">Record hearing outcomes</text>
+    <text x="298" y="212">Flag cases with no next date</text>
+    <text x="298" y="236">Deadlines from service date</text>
+    <text x="298" y="260">Register of court directions</text>
+    <text x="298" y="284">Auto-fill case from the order</text>
+    <text x="298" y="308">Daily board for tomorrow</text>
+
+    <text x="540" y="188">OCR for scanned orders</text>
+    <text x="540" y="212">Reminders and daily digest</text>
+    <text x="540" y="236">Excel case-register import</text>
+    <text x="540" y="260">Conflict check at intake</text>
+    <text x="540" y="284">Matter-level access control</text>
+    <text x="540" y="308">Retention and deletion</text>
+  </g>
+</svg>
+<figcaption>Phase one completes the hackathon plan. Phase two makes CasePilot follow a case across hearings, not just a single order. Phase three covers what a real rollout needs.</figcaption>
+</figure>
+<p>The next step before any new feature is a full manual run of the MVP definition of done on the live app, from a clean browser session.</p>
+</section>
+
+<!-- 11 -->
+<section id="impact">
+<h2>Impact and how we measure it</h2>
+<p>CasePilot's value is time and certainty: the hours spent reading orders and copying directions into diaries become minutes of review, and every date in the system can be traced to its source.</p>
+
+<h3>Expected impact</h3>
+<ul>
+  <li><strong>For a solo advocate:</strong> each new order produces a checked to-do list and calendar entries without retyping. The phone app shows what is due today, even between courtrooms.</li>
+  <li><strong>For a law firm:</strong> partners can see who owns each direction, which dates are still unconfirmed and what is overdue, across every matter, without asking on WhatsApp.</li>
+  <li><strong>For a corporate legal team:</strong> a single, auditable record of obligations across disputes and regulatory matters, ready for internal reporting and handovers to external counsel.</li>
+  <li><strong>For clients:</strong> fewer missed steps, and a lawyer who can answer "what happens next?" with a source.</li>
+</ul>
+
+<h3>What we measure</h3>
+<p>We will report only measured results, including failures and limitations. Where a metric has not been run yet, we say so.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Metric</th><th>What it shows</th><th>How we measure it</th><th>Result so far</th></tr></thead>
+  <tbody>
+    <tr><td>Time to action plan</td><td>How fast an order becomes a reviewable plan</td><td>Job timestamps from upload to "pending review"</td><td>36 s on one live run of the sample order; target under 60 s</td></tr>
+    <tr><td>Citation coverage</td><td>Share of extracted items whose quote is found in the document</td><td>The server's citation verifier</td><td>16 of 16 verified on that run</td></tr>
+    <tr><td>Extraction accuracy</td><td>Whether directions and dates match the source</td><td>Live eval suite on fictional orders</td><td>Eval suite built; full results to be reported at the demo</td></tr>
+    <tr><td>Deadline handling</td><td>Whether relative and conditional dates stay unconfirmed</td><td>Eval checks on every case</td><td>Checked in every eval case; results to be reported at the demo</td></tr>
+    <tr><td>Duplicate safety</td><td>Whether retries create duplicate tasks</td><td>Integration tests replaying approvals and jobs</td><td>Covered by passing tests</td></tr>
+    <tr><td>Tenant isolation</td><td>Whether one organisation can see another's data</td><td>Security-rules and function tests</td><td>Covered by passing tests</td></tr>
+  </tbody>
+</table>
+</div>
+<p>One run is not a benchmark. Before the final presentation, we will run the full evaluation suite and present its numbers as they are.</p>
+</section>
+
+<!-- 12 -->
+<section id="demo">
+<h2>Demo walkthrough</h2>
+<p>Our four-minute demo follows one fictional matter, <em>ABC Traders v. XYZ Supplies</em> in the Demo Civil Court, Delhi, from a new court order to tracked work. Every document in the demo is synthetic and stamped "FICTIONAL SAMPLE".</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Time</th><th>Step</th><th>What judges will see</th></tr></thead>
+  <tbody>
+    <tr><td>0:00–0:40</td><td>The problem</td><td>Why directions and follow-ups get lost across long orders and manual tools</td></tr>
+    <tr><td>0:40–1:10</td><td>Dashboard</td><td>The case, its status, the assigned team, the upcoming hearing and pending work</td></tr>
+    <tr><td>1:10–2:00</td><td>Upload the order</td><td>The order dated 2 November 2026 is processed live; the summary, directions, dates and page citations appear</td></tr>
+    <tr><td>2:00–2:50</td><td>Review the action plan</td><td>The statement-of-account task, the conditional response task and hearing preparation; the "within 14 days" deadlines flagged rather than guessed</td></tr>
+    <tr><td>2:50–3:30</td><td>Approve and track</td><td>A task approved and assigned to a team member, then shown on the task board, the timeline and the activity history</td></tr>
+    <tr><td>3:30–4:00</td><td>Impact</td><td>How CasePilot turns documents into traceable, reviewable workflows with the lawyer in control</td></tr>
+  </tbody>
+</table>
+</div>
+<p>The demo deliberately shows at least one warning. A legal AI that never says "check this" is not one a lawyer should trust.</p>
+
+<h2 id="closing">Closing statement</h2>
+<p>Lawyers do not just need a place to store case files. They need to know what each document means for their next action, and they need to be able to prove where that answer came from.</p>
+<p>CasePilot AI reads a court order, extracts its directions and dates, links every finding to its page, and proposes an action plan. The lawyer reviews, approves and assigns the work, and the team tracks it to completion in one shared workspace, with every step on record.</p>
+<p>Our vision is to help Indian legal professionals spend less time organising case information and more time on the work that needs their expertise. <strong>From legal documents to actionable case workflows, with the lawyer always in control.</strong></p>
+</section>
+
+</main>
+</body>
+</html>

@@ -33,6 +33,8 @@ export const ACTIVITY_LABELS: Record<string, string> = {
   'document.rejected': 'uploaded a file that was rejected',
   'analysis.requested': 'asked for a new AI analysis',
   'analysis.created': 'received an AI analysis to review',
+  'analysis.translated': 'translated a summary into Hindi',
+  'copilot.asked': 'asked the case copilot a question',
   'analysis.item.approved': 'approved an AI suggestion',
   'analysis.item.edited': 'edited and approved an AI suggestion',
   'analysis.item.rejected': 'rejected an AI suggestion',

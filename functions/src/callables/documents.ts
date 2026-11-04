@@ -84,7 +84,7 @@ export const analyzeDocument = onCall(
       await requireCase(tx, ctx, input.caseId, { writable: true });
       const record = (await tx.get(docRef)).data() as DocumentDoc<Timestamp> | undefined;
       if (!record) throw new HttpsError('not-found', 'Document not found.');
-      if (record.processingStatus === 'rejected') {
+      if (record.processingStatus === 'rejected' || record.errorCode === 'upload_abandoned') {
         throw new HttpsError('failed-precondition', 'This file was rejected. Upload a corrected file instead.');
       }
       if (record.processingStatus !== 'ready' && record.processingStatus !== 'failed') {

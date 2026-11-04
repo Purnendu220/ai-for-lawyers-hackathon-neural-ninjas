@@ -11,9 +11,9 @@ Hackathon team repository for Neural Ninjas - [hackindia-team:ai-for-lawyers-hac
 
 > **Live app:** https://casepilot-neural-ninjas.web.app
 >
-> **Status:** in development. Days 1–5 of 8 are done and deployed: the full MVP workflow from
+> **Status:** in development. Days 1–6 of 8 are done and deployed: the full MVP workflow from
 > court-order upload through Claude analysis with checked citations, lawyer review, tasks, timeline
-> and dashboard. See [Features](#features) for what works today and the
+> and dashboard, plus the case copilot and Hindi summaries. See [Features](#features) for what works today and the
 > [implementation plan](docs/IMPLEMENTATION_PLAN.md) for what comes next.
 
 ---
@@ -83,8 +83,8 @@ and confirming inferred deadlines without a lawyer.
 | Human review | Side-by-side PDF and findings; approve, edit or reject each item; bulk-approve items without warnings | ✅ Built |
 | Tasks and timeline | List and board views, a cross-case task list, verified hearing dates, dates to confirm, overdue flags, calendar | ✅ Built |
 | Dashboard | Upcoming hearings, urgent tasks, reviews waiting, recent activity | ✅ Built |
-| Case copilot | Questions about the case files, answered with document and page references | Day 6 |
-| Hindi summaries | Machine-translated summaries, clearly labelled | Day 6 |
+| Case copilot | Questions about the case files, answered only from them, with checked page references; says when the documents don't establish an answer | ✅ Built |
+| Hindi summaries | Machine-translated summaries, clearly labelled | ✅ Built |
 
 ---
 
@@ -257,6 +257,8 @@ To use your own project instead, create one with Firestore in `asia-south1`, put
 - **"Cannot find module '@rolldown/binding-…'" or a missing `@esbuild/…` package** after
   `npm install <package>`: an npm bug pruned the native binaries. Delete `node_modules` and
   `package-lock.json`, then run `npm install` once.
+- **The Firestore emulator exits with code 3221225786** right after you stop a previous run: wait a
+  few seconds and start it again.
 - **The first callable request times out locally**: on some Windows machines the function worker
   takes 30 seconds or more to start the first time. Retry once it has warmed up.
 

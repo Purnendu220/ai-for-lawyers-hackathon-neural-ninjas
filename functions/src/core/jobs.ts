@@ -97,16 +97,20 @@ export async function releaseJob(
   return failed ? 'failed' : 'retry';
 }
 
-/** Queues a task. The task ID is the job ID, so a repeated enqueue of the same job is dropped. */
+/**
+ * Queues a task. The task ID defaults to the job ID, so a repeated enqueue of the same job is
+ * dropped; recovery passes a fresh one.
+ */
 export async function enqueue(
   functionName: 'processDocument' | 'runAnalysis',
   payload: DocumentTaskPayload,
+  taskId: string = payload.jobId,
 ): Promise<void> {
   const queue = getFunctions().taskQueue<DocumentTaskPayload>(
     `locations/${FUNCTIONS_REGION}/functions/${functionName}`,
   );
   try {
-    await queue.enqueue(payload, { id: payload.jobId });
+    await queue.enqueue(payload, { id: taskId });
   } catch (error) {
     if ((error as { code?: string }).code === 'functions/task-already-exists') {
       logger.info('task.duplicate', { functionName, jobId: payload.jobId });

@@ -19,6 +19,7 @@ import type {
   WorkspaceType,
 } from './enums';
 import type { OrgPolicy } from './permissions';
+import type { CopilotSource } from './schemas/copilot';
 import type { ReviewEdits } from './schemas/review';
 import type {
   ExtractedDate,
@@ -117,6 +118,7 @@ export type AuditAction =
   | 'document.rejected'
   | 'analysis.requested'
   | 'analysis.created'
+  | 'analysis.translated'
   | 'analysis.item.approved'
   | 'analysis.item.edited'
   | 'analysis.item.rejected'
@@ -221,6 +223,10 @@ export type AnalysisDoc<TS> = {
   model: string;
   promptVersion: string;
   summary: string;
+  /** Machine translation of `summary`, made on request (translateSummary). */
+  summaryHi?: string;
+  /** 'fixture' marks a test stand-in translation. */
+  summaryHiMode?: 'live' | 'fixture';
   language: Language;
   caseDetails: Extraction['caseDetails'];
   facts: AnalysisFact<TS>[];
@@ -295,4 +301,23 @@ export type EventDoc<TS> = CaseScoped & {
   createdAt: TS;
   verifiedBy: string | null;
   verifiedAt: TS | null;
+};
+
+/** One copilot question and its answer, visible to everyone on the case. */
+export type MessageDoc<TS> = {
+  question: string;
+  answer: string;
+  /** The documents don't establish an answer. */
+  insufficientEvidence: boolean;
+  /** The answer claims an answer but none of its sources could be checked against the text. */
+  unsupported: boolean;
+  sources: CopilotSource[];
+  followUpQuestions: string[];
+  mode: 'live' | 'fixture';
+  model: string;
+  promptVersion: string;
+  usage: { inputTokens: number; outputTokens: number } | null;
+  latencyMs: number;
+  createdBy: string;
+  createdAt: TS;
 };

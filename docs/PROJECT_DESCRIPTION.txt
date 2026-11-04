@@ -1,0 +1,52 @@
+CasePilot AI: Less paperwork. Smarter case management. Never miss a critical task.
+Team Neural Ninjas | Live app: https://casepilot-neural-ninjas.web.app
+
+OVERVIEW
+CasePilot AI is an AI-powered case management app for Indian advocates, law firms and corporate legal teams. A lawyer uploads a court order (PDF or Word) and CasePilot turns it into a reviewable action plan: a summary, the court's directions, every date and suggested tasks. Each finding cites its source page and a short quote, and nothing enters the case until a lawyer approves it.
+
+THE PROBLEM
+Court directions are buried in dense orders and scattered across PDFs, paper diaries, Excel sheets and WhatsApp groups. Someone has to read every order, pull out each direction, work out the dates and copy them elsewhere by hand. One order can mix a deadline counted from the order date, a deadline that depends on service, and a fixed hearing date. A missed direction or misread date can cost a client their case. Generic chatbots can summarise an order, but the summary never becomes tracked work, and unchecked AI can invent deadlines.
+
+OBJECTIVES
+1. Turn every court order into a structured, reviewable action plan in minutes.
+2. Make every AI claim verifiable with a checked page citation.
+3. Keep the lawyer in control: the AI only proposes; people approve.
+4. Handle uncertainty honestly: "within 14 days" never becomes a confirmed date without a lawyer.
+5. Give teams one shared record of cases, tasks, hearings and activity, with roles that fit Indian practice.
+6. Protect confidential data from day one.
+
+HOW IT WORKS
+1. Upload: the file goes to private storage; the server checks its real file signature and flags duplicates.
+2. Extract: text is pulled out page by page, so citations point to exact pages.
+3. Analyse: Claude (Anthropic) returns schema-validated directions, dates, facts and proposed tasks, each with a page and quote.
+4. Verify: the server searches the page text for every quote and flags any it cannot find.
+5. Review: the lawyer sees the PDF beside the findings and approves, edits or rejects each item.
+6. Track: approved items become tasks and timeline events with owners, due dates, overdue flags and an audit trail.
+
+KEY FEATURES (BUILT AND DEPLOYED)
+- Workspaces for solo advocates, law firms and corporate legal teams
+- Five roles (owner, admin, lawyer, paralegal, viewer) enforced on the server
+- Case management, team invitations and private document upload
+- AI extraction with verified citations and a side-by-side review screen
+- Task board, timeline, calendar and a dashboard of hearings and urgent work
+- Audit trail of every change; installable app for Android, iOS and desktop
+
+RESPONSIBLE AI
+- Strict output schema, revalidated on the server
+- Citations checked against the actual page text
+- No invented deadlines; conditional directions stay conditional
+- Documents treated as untrusted input; prompt-injection attempts tested
+- Warnings for unclear text, blank pages and pages not analysed
+- No outcome prediction, legal advice or automatic filing
+
+TECHNOLOGY
+React 19, TypeScript and Vite as an installable PWA; Firebase Authentication, Firestore, Cloud Storage and Cloud Functions in the Mumbai region; retry-safe background jobs; Claude through the Anthropic API with structured outputs. Every write goes through a server function that checks the user's role and records an audit entry in the same transaction.
+
+SECURITY AND PRIVACY
+Each organisation's data is isolated by security rules and server-side checks. The API key stays on the server, logs never contain document text, and only trusted devices cache case data. The demo uses fictional documents only.
+
+STATUS AND RESULTS
+Five of our eight planned build days are complete and deployed, covered by 93 automated tests (39 integration, 13 security-rules, 41 unit). In our first live test, the sample order went from upload to a reviewable plan in 36 seconds, with all 16 citations verified. Next: a case copilot that answers questions with cited sources, Hindi summaries, and hearing-outcome tracking.
+
+IMPACT
+CasePilot turns hours of reading and copying into minutes of review. Solo advocates get a checked to-do list from every order, firms see who owns each direction and what is overdue, and corporate teams get an auditable record of obligations, with the lawyer always in control.

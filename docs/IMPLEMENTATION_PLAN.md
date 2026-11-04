@@ -251,32 +251,39 @@ A second organization sees nothing of it. **P0 is complete at this gate.**
 ## Day 6 — Copilot, Hindi, offline
 
 **WEB**
-- [ ] Copilot chat:
-  - [ ] Suggested questions.
-  - [ ] Answers with source chips that open the PDF at the cited page.
-  - [ ] An "insufficient evidence" state.
-- [ ] Hindi summary toggle; i18n for navigation and key labels.
-- [ ] Offline UX:
-  - [ ] Banner.
-  - [ ] Actions disabled offline.
-  - [ ] "Showing saved data" badge.
-  - [ ] Trusted-device setting.
-  - [ ] Sign-out wipes the cache.
-- [ ] Loading, empty and error states on every screen.
+- [x] Copilot chat:
+  - [x] Suggested questions.
+  - [x] Answers with source chips that open the PDF at the cited page.
+  - [x] An "insufficient evidence" state.
+- [x] Hindi summary toggle (machine translation, labelled).
+- [ ] i18n for navigation and key labels. Cut (cut list item 4).
+- [x] Offline UX:
+  - [x] Banner.
+  - [x] Actions disabled offline.
+  - [x] "Showing saved data": the offline banner says saved data is shown read-only.
+  - [x] Trusted-device setting.
+  - [x] Sign-out wipes the cache.
+- [x] Loading, empty and error states on every screen.
 
 **API**
-- [ ] `askCaseCopilot`: MiniSearch retrieval, `chunkId` resolution, quote check.
-- [ ] `translateSummary`.
-- [ ] Usage counter and quota.
-- [ ] `recoverStuckJobs` scheduled function.
+- [x] `askCaseCopilot`: BM25 retrieval (no dependency), Hindi questions translated for search,
+      excerpt-label resolution, quote check, daily quota.
+- [x] `translateSummary`.
+- [x] Usage counter and quota.
+- [x] `recoverStuckJobs` scheduled function.
 
 **AI**
-- [ ] `copilot.v1` (Prompt C) and `translate.v1`.
-- [ ] Copilot evals: a supported question cites real chunks; an unsupported question returns
-      `insufficientEvidence`.
+- [x] `copilot.v2` (Prompt C; v2 asks for plain text after the first live run used Markdown) and
+      `translate.v1`.
+- [x] Copilot evals (`functions/evals/copilot.eval.ts`): a supported question cites real chunks; an
+      unsupported question returns `insufficientEvidence`.
 
 **Done when** the copilot answers the sample questions with citations that resolve, and an
 unsupported question says the documents don't establish the answer.
+
+> **Status, 4 Nov 2026:** done and deployed. A live run answered the next-hearing question from the
+> order with a verified citation, said the amount owed was not established without inventing one,
+> and produced a faithful Hindi summary. 9 copilot integration tests (48 in all).
 
 ---
 

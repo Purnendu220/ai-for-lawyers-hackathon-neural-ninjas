@@ -15,4 +15,5 @@ export * from './schemas/team';
 export * from './schemas/document';
 export * from './schemas/review';
 export * from './schemas/work';
+export * from './schemas/copilot';
 export * from './schemas/extraction';

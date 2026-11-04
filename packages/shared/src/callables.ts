@@ -2,6 +2,12 @@ import type { z } from 'zod';
 import { ArchiveCaseInput, CreateCaseInput, CreateCaseOutput, UpdateCaseInput } from './schemas/case';
 import { OkOutput } from './schemas/common';
 import {
+  AskCopilotInput,
+  AskCopilotOutput,
+  TranslateSummaryInput,
+  TranslateSummaryOutput,
+} from './schemas/copilot';
+import {
   AnalyzeDocumentOutput,
   DocumentRef,
   StartUploadInput,
@@ -50,6 +56,8 @@ export const callables = {
   updateEvent: { input: UpdateEventInput, output: OkOutput },
   verifyEvent: { input: VerifyEventInput, output: OkOutput },
   listCaseActivity: { input: ListCaseActivityInput, output: ListCaseActivityOutput },
+  askCaseCopilot: { input: AskCopilotInput, output: AskCopilotOutput },
+  translateSummary: { input: TranslateSummaryInput, output: TranslateSummaryOutput },
 } as const;
 
 export type CallableName = keyof typeof callables;

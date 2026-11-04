@@ -14,6 +14,8 @@ export {
   updateTask,
   verifyEvent,
 } from './callables/work';
+export { askCaseCopilot, translateSummary } from './callables/copilot';
+export { recoverStuckJobs } from './scheduled/recoverStuckJobs';
 export { onUploadFinalized } from './triggers/onUploadFinalized';
 export { processDocument } from './tasks/processDocument';
 export { runAnalysis } from './tasks/runAnalysis';
