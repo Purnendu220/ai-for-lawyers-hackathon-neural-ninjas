@@ -10,6 +10,17 @@ import {
 import { CreateOrganizationInput, CreateOrganizationOutput } from './schemas/org';
 import { ReviewAnalysisInput, ReviewAnalysisOutput } from './schemas/review';
 import {
+  CreateEventInput,
+  CreateEventOutput,
+  CreateTaskInput,
+  CreateTaskOutput,
+  ListCaseActivityInput,
+  ListCaseActivityOutput,
+  UpdateEventInput,
+  UpdateTaskInput,
+  VerifyEventInput,
+} from './schemas/work';
+import {
   AcceptInvitationOutput,
   InvitationRef,
   InviteMemberInput,
@@ -33,6 +44,12 @@ export const callables = {
   startUpload: { input: StartUploadInput, output: StartUploadOutput },
   analyzeDocument: { input: DocumentRef, output: AnalyzeDocumentOutput },
   reviewAnalysis: { input: ReviewAnalysisInput, output: ReviewAnalysisOutput },
+  createTask: { input: CreateTaskInput, output: CreateTaskOutput },
+  updateTask: { input: UpdateTaskInput, output: OkOutput },
+  createEvent: { input: CreateEventInput, output: CreateEventOutput },
+  updateEvent: { input: UpdateEventInput, output: OkOutput },
+  verifyEvent: { input: VerifyEventInput, output: OkOutput },
+  listCaseActivity: { input: ListCaseActivityInput, output: ListCaseActivityOutput },
 } as const;
 
 export type CallableName = keyof typeof callables;

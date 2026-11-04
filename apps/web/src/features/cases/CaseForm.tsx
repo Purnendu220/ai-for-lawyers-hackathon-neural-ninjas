@@ -62,7 +62,10 @@ export function CaseForm({ mode, defaultValues, submitLabel, onSubmit, onCancel 
 
   const matterTypes = features.matterTypes.some((m) => m.value === defaultValues.matterType)
     ? features.matterTypes
-    : [...features.matterTypes, { value: defaultValues.matterType, label: defaultValues.matterType }];
+    : [
+        ...features.matterTypes,
+        { value: defaultValues.matterType, label: defaultValues.matterType },
+      ];
 
   return (
     <form onSubmit={submit} noValidate className="grid gap-5">
@@ -77,10 +80,18 @@ export function CaseForm({ mode, defaultValues, submitLabel, onSubmit, onCancel 
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field id="caseNumber" label="Case number" error={errors.caseNumber?.message}>
-          <Input id="caseNumber" placeholder="e.g. CS(COMM) 123/2026" {...form.register('caseNumber')} />
+          <Input
+            id="caseNumber"
+            placeholder="e.g. CS(COMM) 123/2026"
+            {...form.register('caseNumber')}
+          />
         </Field>
         <Field id="courtName" label="Court" error={errors.courtName?.message}>
-          <Input id="courtName" placeholder="e.g. Delhi High Court" {...form.register('courtName')} />
+          <Input
+            id="courtName"
+            placeholder="e.g. Delhi High Court"
+            {...form.register('courtName')}
+          />
         </Field>
         <Field id="matterType" label="Matter type" error={errors.matterType?.message}>
           <Select id="matterType" {...form.register('matterType')}>
@@ -123,18 +134,25 @@ export function CaseForm({ mode, defaultValues, submitLabel, onSubmit, onCancel 
           render={({ field }) => {
             const ids = [...new Set([...assignable.map((m) => m.id), ...field.value])];
             const toggle = (uid: string, checked: boolean) =>
-              field.onChange(checked ? [...field.value, uid] : field.value.filter((id) => id !== uid));
+              field.onChange(
+                checked ? [...field.value, uid] : field.value.filter((id) => id !== uid),
+              );
             return (
               <fieldset className="grid gap-2">
                 <legend className="mb-1 text-sm font-medium">Assigned team</legend>
                 {ids.length === 0 && (
-                  <p className="text-sm text-muted-foreground">No owners, admins or lawyers to assign yet.</p>
+                  <p className="text-sm text-muted-foreground">
+                    No owners, admins or lawyers to assign yet.
+                  </p>
                 )}
                 <div className="grid gap-2 sm:grid-cols-2">
                   {ids.map((uid) => {
                     const member = byId.get(uid);
                     return (
-                      <label key={uid} className="flex items-center gap-2 rounded-md border p-2 text-sm">
+                      <label
+                        key={uid}
+                        className="flex items-center gap-2 rounded-md border p-2 text-sm"
+                      >
                         <input
                           type="checkbox"
                           className="size-4 accent-primary"

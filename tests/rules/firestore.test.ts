@@ -83,6 +83,17 @@ describe('tenant isolation', () => {
     );
     await assertFails(getDocs(collectionGroup(as('alice'), 'tasks')));
   });
+
+  it('scopes cross-case analysis and event queries to the caller’s organization', async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'organizations/orgA/cases/case1/analyses/a1'), { orgId: 'orgA', status: 'pending_review' });
+      await setDoc(doc(ctx.firestore(), 'organizations/orgA/cases/case1/events/e1'), { orgId: 'orgA', type: 'hearing' });
+    });
+    for (const group of ['analyses', 'events']) {
+      await assertSucceeds(getDocs(query(collectionGroup(as('alice'), group), where('orgId', '==', 'orgA'))));
+      await assertFails(getDocs(query(collectionGroup(as('bob'), group), where('orgId', '==', 'orgA'))));
+    }
+  });
 });
 
 describe('all writes go through Cloud Functions', () => {

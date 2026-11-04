@@ -6,6 +6,14 @@ export { acceptInvitation, inviteMember, revokeInvitation, updateMember } from '
 export { archiveCase, createCase, updateCase } from './callables/cases';
 export { analyzeDocument, startUpload } from './callables/documents';
 export { reviewAnalysis } from './callables/review';
+export {
+  createEvent,
+  createTask,
+  listCaseActivity,
+  updateEvent,
+  updateTask,
+  verifyEvent,
+} from './callables/work';
 export { onUploadFinalized } from './triggers/onUploadFinalized';
 export { processDocument } from './tasks/processDocument';
 export { runAnalysis } from './tasks/runAnalysis';

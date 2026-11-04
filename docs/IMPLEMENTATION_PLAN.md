@@ -213,24 +213,24 @@ and events.
 ## Day 5 — Tasks, timeline, dashboard
 
 **WEB**
-- [ ] Case tasks: list and kanban views.
-- [ ] Global `/tasks`: collection-group query, "Assigned to me", overdue badges.
-- [ ] Timeline:
-  - [ ] Verified and `needs_review` styles.
-  - [ ] Add event.
-  - [ ] Verify or correct a date.
-- [ ] Dashboard: KPI cards, hearing agenda (verified hearings), urgent tasks, recent activity.
-- [ ] `/calendar` as a simple agenda of verified events.
+- [x] Case tasks: list and kanban views.
+- [x] Global `/tasks`: collection-group query, "Assigned to me", overdue badges.
+- [x] Timeline:
+  - [x] Verified and `needs_review` styles.
+  - [x] Add event.
+  - [x] Verify or correct a date.
+- [x] Dashboard: KPI cards, hearing agenda (verified hearings), urgent tasks, recent activity.
+- [x] `/calendar` as a simple agenda of verified events.
 
 **API**
-- [ ] `createTask`, `updateTask`, `createEvent`, `updateEvent`, `verifyEvent`, `listCaseActivity`.
-- [ ] Collection-group rules for tasks and events.
-- [ ] Shared IST date helpers (`dueDateOnly`, overdue logic).
-- [ ] `updateCase` refreshes `caseTitle` copies.
+- [x] `createTask`, `updateTask`, `createEvent`, `updateEvent`, `verifyEvent`, `listCaseActivity`.
+- [x] Collection-group rules for tasks and events.
+- [x] Shared IST date helpers (`dueDateOnly`, overdue logic).
+- [x] `updateCase` refreshes `caseTitle` copies.
 
 **AI**
 - [ ] Stretch: `actionPlan.v1` (Prompt B), which adds proposals to the analysis with
-      `duplicateOfTaskId`.
+      `duplicateOfTaskId`. Skipped (cut list item 2).
 
 **Gate G3: MVP definition of done** (blueprint §2). On dev, run the whole path:
 1. Create a case.
@@ -240,6 +240,11 @@ and events.
 5. Track them on the timeline and the task board.
 
 A second organization sees nothing of it. **P0 is complete at this gate.**
+
+> **Status, 4 Nov 2026:** built and deployed. 10 new integration tests (39 in all) cover manual
+> tasks, completion, paralegal limits, case-title refresh, event verification, next-hearing updates
+> and the activity feed; 13 rules tests cover the cross-case queries. The screens have not been
+> clicked through in a browser yet, so the gate itself is still to be run by hand.
 
 ---
 

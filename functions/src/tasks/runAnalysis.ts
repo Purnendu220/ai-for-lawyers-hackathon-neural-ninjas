@@ -60,6 +60,8 @@ export const runAnalysis = onTaskDispatched(
       const items = toReviewItems(output, documentId, record.sourceUnit, analysed);
 
       const analysis: Omit<AnalysisDoc<Timestamp>, 'createdAt'> = {
+        orgId,
+        caseId,
         documentId,
         status: 'pending_review',
         mode: result.mode,

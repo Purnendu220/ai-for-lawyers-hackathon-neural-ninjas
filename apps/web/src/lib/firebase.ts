@@ -35,7 +35,8 @@ export const app = initializeApp({
 if (!usingEmulators && env.VITE_APPCHECK_SITE_KEY) {
   if (import.meta.env.DEV) {
     // Prints a debug token in the console; register it under App Check → Manage debug tokens.
-    (globalThis as { FIREBASE_APPCHECK_DEBUG_TOKEN?: boolean }).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+    (globalThis as { FIREBASE_APPCHECK_DEBUG_TOKEN?: boolean }).FIREBASE_APPCHECK_DEBUG_TOKEN =
+      true;
   }
   initializeAppCheck(app, {
     provider: new ReCaptchaEnterpriseProvider(env.VITE_APPCHECK_SITE_KEY),
@@ -65,7 +66,8 @@ export function db(): Firestore {
         ? persistentLocalCache({ tabManager: persistentMultipleTabManager() })
         : memoryLocalCache(),
     });
-    if (usingEmulators) connectFirestoreEmulator(firestore, EMULATOR_HOST, EMULATOR_PORTS.firestore);
+    if (usingEmulators)
+      connectFirestoreEmulator(firestore, EMULATOR_HOST, EMULATOR_PORTS.firestore);
   }
   return firestore;
 }

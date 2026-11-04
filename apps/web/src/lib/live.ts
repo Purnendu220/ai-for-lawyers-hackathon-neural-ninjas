@@ -38,8 +38,14 @@ export function useLiveDoc<T>(path: string | null): Live<WithId<T> | null> {
   }, [path]);
 
   if (!path) return { data: undefined, error: null, loading: false, fromCache: false };
-  if (snapshot?.key !== path) return { data: undefined, error: null, loading: true, fromCache: false };
-  return { data: snapshot.data, error: snapshot.error, loading: false, fromCache: snapshot.fromCache };
+  if (snapshot?.key !== path)
+    return { data: undefined, error: null, loading: true, fromCache: false };
+  return {
+    data: snapshot.data,
+    error: snapshot.error,
+    loading: false,
+    fromCache: snapshot.fromCache,
+  };
 }
 
 /**
@@ -66,6 +72,12 @@ export function useLiveQuery<T>(query: Query | null): Live<WithId<T>[]> {
   }, [query]);
 
   if (!query) return { data: undefined, error: null, loading: false, fromCache: false };
-  if (snapshot?.key !== query) return { data: undefined, error: null, loading: true, fromCache: false };
-  return { data: snapshot.data, error: snapshot.error, loading: false, fromCache: snapshot.fromCache };
+  if (snapshot?.key !== query)
+    return { data: undefined, error: null, loading: true, fromCache: false };
+  return {
+    data: snapshot.data,
+    error: snapshot.error,
+    loading: false,
+    fromCache: snapshot.fromCache,
+  };
 }

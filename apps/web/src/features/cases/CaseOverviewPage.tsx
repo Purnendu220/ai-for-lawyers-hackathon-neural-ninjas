@@ -29,6 +29,7 @@ import { errorMessage } from '@/lib/errors';
 import { useOnline } from '@/pwa/online';
 import { useCase } from './case-context';
 import { CaseForm } from './CaseForm';
+import { CaseActivity } from './CaseActivity';
 import { CourtDirections } from './CourtDirections';
 import type { Case } from './useCases';
 
@@ -53,7 +54,8 @@ export default function CaseOverviewPage() {
   const [editing, setEditing] = useState(false);
   const canWrite = can(member.role, 'case.write', org.policy) && kase.status !== 'archived';
   const features = WORKSPACE_FEATURES[org.workspaceType];
-  const matterLabel = features.matterTypes.find((m) => m.value === kase.matterType)?.label ?? kase.matterType;
+  const matterLabel =
+    features.matterTypes.find((m) => m.value === kase.matterType)?.label ?? kase.matterType;
 
   if (editing && canWrite) {
     return (
@@ -86,7 +88,12 @@ export default function CaseOverviewPage() {
     ['Case type', kase.caseType],
     ['Client', kase.clientName],
     ['Opposing party', kase.opposingParty],
-    ['Created', kase.createdAt ? `${formatInstant(kase.createdAt.toDate())} by ${memberName(byId.get(kase.createdBy))}` : null],
+    [
+      'Created',
+      kase.createdAt
+        ? `${formatInstant(kase.createdAt.toDate())} by ${memberName(byId.get(kase.createdBy))}`
+        : null,
+    ],
     ['Last updated', kase.updatedAt ? formatInstant(kase.updatedAt.toDate()) : null],
   ];
 
@@ -145,7 +152,9 @@ export default function CaseOverviewPage() {
                       <li key={uid} className="flex justify-between gap-2">
                         <span className="truncate">{memberName(assignee)}</span>
                         {assignee && (
-                          <span className="text-muted-foreground">{ROLE_LABELS[assignee.role]}</span>
+                          <span className="text-muted-foreground">
+                            {ROLE_LABELS[assignee.role]}
+                          </span>
                         )}
                       </li>
                     );
@@ -157,6 +166,8 @@ export default function CaseOverviewPage() {
         )}
 
         <CourtDirections caseId={kase.id} />
+
+        <CaseActivity caseId={kase.id} />
 
         {canWrite && <ArchiveCard orgId={orgId} kase={kase} />}
       </div>

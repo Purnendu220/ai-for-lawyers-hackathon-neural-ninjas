@@ -1,12 +1,10 @@
 import { createHash } from 'node:crypto';
-import { FieldValue, Timestamp } from 'firebase-admin/firestore';
+import { Timestamp } from 'firebase-admin/firestore';
 import { HttpsError, onCall } from 'firebase-functions/https';
 import {
   callables,
-  dateOnlyToInstant,
   paths,
   reviewItemKind,
-  todayDateOnly,
   type AnalysisDoc,
   type CallableOutput,
   type EventDoc,
@@ -19,6 +17,7 @@ import {
 import { audit } from '../core/audit';
 import { requireAuth, requireCase, requireMember } from '../core/authz';
 import { callableOptions, db } from '../core/firebase';
+import { midnightIst, readHearings, refreshNextHearing } from '../core/hearings';
 import { parseInput } from '../core/validate';
 
 /** Roles that can own a task. Viewers can't be assigned work. */
@@ -56,7 +55,6 @@ function cleanEdits(edits: ReviewEdits | undefined): ReviewEdits | null {
   return entries.length ? (Object.fromEntries(entries) as ReviewEdits) : null;
 }
 
-const midnightIst = (day: string | null) => (day ? Timestamp.fromDate(dateOnlyToInstant(day)) : null);
 
 /**
  * Applies a reviewer's decisions to an analysis in one transaction (docs/ARCHITECTURE.md §5.6).
@@ -71,7 +69,6 @@ export const reviewAnalysis = onCall(
     const ctx = await requireMember(req, input.orgId, 'ai.review');
     const { caseId, analysisId } = input;
     const analysisRef = db.doc(paths.analysis(ctx.orgId, caseId, analysisId));
-    const today = todayDateOnly();
 
     return db.runTransaction(async (tx) => {
       // Every read happens before the first write, as transactions require.
@@ -100,9 +97,7 @@ export const reviewAnalysis = onCall(
           );
         }
       }
-      const hearings = await tx.get(
-        db.collection(paths.events(ctx.orgId, caseId)).where('type', '==', 'hearing'),
-      );
+      const hearings = await readHearings(tx, ctx.orgId, caseId);
 
       const lists = {
         fact: [...analysis.facts],
@@ -114,7 +109,7 @@ export const reviewAnalysis = onCall(
       const now = Timestamp.now();
       const taskIds: string[] = [];
       const eventIds: string[] = [];
-      const verifiedHearings: string[] = [];
+      const changedEvents = new Map<string, EventDoc<Timestamp>>();
       let applied = 0;
       let skipped = 0;
 
@@ -193,7 +188,7 @@ export const reviewAnalysis = onCall(
           resultEntityId = entityId('e', analysisId, date.itemId);
           tx.create(db.doc(paths.event(ctx.orgId, caseId, resultEntityId)), event);
           eventIds.push(resultEntityId);
-          if (verified && type === 'hearing') verifiedHearings.push(eventDateOnly);
+          changedEvents.set(resultEntityId, event);
         }
 
         list[index] = {
@@ -229,21 +224,7 @@ export const reviewAnalysis = onCall(
         });
       }
 
-      if (verifiedHearings.length > 0) {
-        const known = hearings.docs
-          .map((doc) => doc.data() as EventDoc<Timestamp>)
-          .filter((event) => event.dateStatus === 'verified' && event.eventDateOnly)
-          .map((event) => event.eventDateOnly as string);
-        const next = [...known, ...verifiedHearings].filter((day) => day >= today).sort()[0] ?? null;
-        if (next !== kase.data.nextHearingDateOnly) {
-          tx.update(kase.ref, {
-            nextHearingDateOnly: next,
-            nextHearingDate: midnightIst(next),
-            updatedAt: FieldValue.serverTimestamp(),
-            updatedBy: ctx.uid,
-          });
-        }
-      }
+      if (changedEvents.size > 0) refreshNextHearing(tx, kase, hearings, changedEvents, ctx.uid);
 
       return { applied, skipped, taskIds, eventIds };
     });

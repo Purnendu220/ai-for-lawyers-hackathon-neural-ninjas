@@ -1,4 +1,4 @@
-import type { DueDateBasis, TaskPriority } from '@casepilot/shared';
+import type { DueDateBasis } from '@casepilot/shared';
 import type { EXTRACTED_DATE_TYPES } from '@casepilot/shared';
 
 export const DATE_TYPE_LABELS: Record<(typeof EXTRACTED_DATE_TYPES)[number], string> = {
@@ -19,9 +19,4 @@ export const BASIS_LABELS: Record<DueDateBasis, string> = {
   none: 'No date given',
 };
 
-export const PRIORITY_LABELS: Record<TaskPriority, string> = {
-  low: 'Low',
-  medium: 'Medium',
-  high: 'High',
-  urgent: 'Urgent',
-};
+export { PRIORITY_LABELS } from '@/lib/labels';

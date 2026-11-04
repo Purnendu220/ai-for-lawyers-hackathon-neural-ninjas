@@ -96,5 +96,11 @@ service cloud.firestore {
     match /{path=**}/events/{eventId} {
       allow read: if isMember(resource.data.orgId);
     }
+
+    // Dashboard count of analyses awaiting review. Analyses created before Day 5 have no orgId and
+    // simply never match an orgId-filtered query.
+    match /{path=**}/analyses/{analysisId} {
+      allow read: if isMember(resource.data.orgId);
+    }
   }
 }

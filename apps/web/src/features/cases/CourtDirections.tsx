@@ -40,7 +40,11 @@ export function CourtDirections({ caseId }: { caseId: string }) {
         {directions.length === 0 && (
           <CardDescription>
             Directions appear here once a lawyer approves them in an AI review.{' '}
-            <Link to="../documents" relative="path" className="text-primary underline-offset-4 hover:underline">
+            <Link
+              to="../documents"
+              relative="path"
+              className="text-primary underline-offset-4 hover:underline"
+            >
               Upload an order
             </Link>
           </CardDescription>
@@ -53,14 +57,16 @@ export function CourtDirections({ caseId }: { caseId: string }) {
               <li key={`${analysisId}-${direction.itemId}`} className="flex flex-col gap-1">
                 <p>{direction.edits?.text ?? direction.direction}</p>
                 <div className="flex flex-wrap items-center gap-2">
-                  {direction.directionType === 'conditional' && <Badge variant="warning">Conditional</Badge>}
+                  {direction.directionType === 'conditional' && (
+                    <Badge variant="warning">Conditional</Badge>
+                  )}
                   <Link
                     to={`../ai-review/${analysisId}`}
                     relative="path"
                     className="text-xs text-primary underline-offset-4 hover:underline"
                   >
-                    {direction.sourceRef.unit === 'section' ? 'Section' : 'Page'} {direction.sourceRef.page ?? '?'} of
-                    the order
+                    {direction.sourceRef.unit === 'section' ? 'Section' : 'Page'}{' '}
+                    {direction.sourceRef.page ?? '?'} of the order
                   </Link>
                 </div>
               </li>

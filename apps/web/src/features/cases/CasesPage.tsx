@@ -49,7 +49,9 @@ export default function CasesPage() {
     const q = search.trim().toLowerCase();
     return all.filter(
       (c) =>
-        (status === 'open' ? c.status === 'active' || c.status === 'pending' : c.status === status) &&
+        (status === 'open'
+          ? c.status === 'active' || c.status === 'pending'
+          : c.status === status) &&
         (!court || c.courtName === court) &&
         (!lawyer || c.assignedLawyerIds.includes(lawyer)) &&
         matches(c, q),
@@ -85,7 +87,10 @@ export default function CasesPage() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="relative sm:col-span-2 lg:col-span-1">
-          <Search className="pointer-events-none absolute top-2.5 left-3 size-4 text-muted-foreground" aria-hidden />
+          <Search
+            className="pointer-events-none absolute top-2.5 left-3 size-4 text-muted-foreground"
+            aria-hidden
+          />
           <Input
             className="pl-9"
             placeholder="Search title, number, party…"
@@ -106,7 +111,11 @@ export default function CasesPage() {
             </option>
           ))}
         </Select>
-        <Select aria-label="Court" value={court} onChange={(e) => filterChange(setCourt)(e.target.value)}>
+        <Select
+          aria-label="Court"
+          value={court}
+          onChange={(e) => filterChange(setCourt)(e.target.value)}
+        >
           <option value="">All courts</option>
           {courts.map((name) => (
             <option key={name} value={name}>
@@ -132,10 +141,15 @@ export default function CasesPage() {
 
       {cases.loading ? (
         <div className="flex justify-center py-12" role="status">
-          <LoaderCircle className="size-6 animate-spin text-muted-foreground" aria-label="Loading cases" />
+          <LoaderCircle
+            className="size-6 animate-spin text-muted-foreground"
+            aria-label="Loading cases"
+          />
         </div>
       ) : cases.error ? (
-        <p className="text-sm text-destructive">We couldn't load cases. Check your connection and try again.</p>
+        <p className="text-sm text-destructive">
+          We couldn't load cases. Check your connection and try again.
+        </p>
       ) : all.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-10 text-center">
@@ -191,7 +205,8 @@ export default function CasesPage() {
                       <div className="min-w-0">
                         <dt className="inline text-muted-foreground">Assigned: </dt>
                         <dd className="inline">
-                          {c.assignedLawyerIds.map((uid) => memberName(byId.get(uid))).join(', ') || '—'}
+                          {c.assignedLawyerIds.map((uid) => memberName(byId.get(uid))).join(', ') ||
+                            '—'}
                         </dd>
                       </div>
                     )}

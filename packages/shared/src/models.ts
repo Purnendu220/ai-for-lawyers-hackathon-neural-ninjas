@@ -124,6 +124,7 @@ export type AuditAction =
   | 'task.updated'
   | 'task.completed'
   | 'event.created'
+  | 'event.updated'
   | 'event.verified'
   | 'copilot.asked';
 
@@ -210,6 +211,9 @@ export type AnalysisDate<TS> = WithoutSource<ExtractedDate> & AnalysisItemReview
 export type AnalysisTask<TS> = WithoutSource<ProposedTask> & AnalysisItemReview<TS>;
 
 export type AnalysisDoc<TS> = {
+  /** Present on analyses created from Day 5 on; lets the dashboard count reviews across cases. */
+  orgId?: string;
+  caseId?: string;
   documentId: string;
   status: AnalysisStatus;
   /** 'fixture' analyses are replays and are labelled as such in the app. */

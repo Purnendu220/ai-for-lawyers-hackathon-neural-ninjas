@@ -43,6 +43,23 @@ async function requireAssignees(
   return unique;
 }
 
+/**
+ * Tasks and events carry a copy of the case title for cross-case lists. Batched after the case
+ * update, so a case with many items cannot exceed a transaction's write limit.
+ */
+async function refreshCaseTitle(orgId: string, caseId: string, title: string): Promise<void> {
+  const [tasks, events] = await Promise.all([
+    db.collection(paths.tasks(orgId, caseId)).get(),
+    db.collection(paths.events(orgId, caseId)).get(),
+  ]);
+  const refs = [...tasks.docs, ...events.docs].map((doc) => doc.ref);
+  for (let i = 0; i < refs.length; i += 400) {
+    const batch = db.batch();
+    for (const ref of refs.slice(i, i + 400)) batch.update(ref, { caseTitle: title });
+    await batch.commit();
+  }
+}
+
 function caseValues(fields: CaseFields, assignees: string[]) {
   return {
     title: fields.title,
@@ -99,12 +116,12 @@ export const updateCase = onCall(
     const ctx = await requireMember(req, input.orgId, 'case.write');
     requireKnownMatterType(ctx, input.fields.matterType);
 
-    await db.runTransaction(async (tx) => {
+    const titleChanged = await db.runTransaction(async (tx) => {
       const kase = await requireCase(tx, ctx, input.caseId, { writable: true });
       const assignees = await requireAssignees(tx, ctx, input.fields.assignedLawyerIds);
       const next = { ...caseValues(input.fields, assignees), status: input.status };
       const fields = changedKeys(next, kase.data);
-      if (fields.length === 0) return;
+      if (fields.length === 0) return false;
       tx.update(kase.ref, { ...next, updatedAt: FieldValue.serverTimestamp(), updatedBy: ctx.uid });
       audit(tx, ctx, {
         action: 'case.updated',
@@ -113,8 +130,10 @@ export const updateCase = onCall(
         caseId: kase.id,
         metadata: { fields },
       });
+      return fields.includes('title');
     });
 
+    if (titleChanged) await refreshCaseTitle(ctx.orgId, input.caseId, input.fields.title);
     return { ok: true };
   },
 );

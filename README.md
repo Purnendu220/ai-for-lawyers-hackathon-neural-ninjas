@@ -11,9 +11,9 @@ Hackathon team repository for Neural Ninjas - [hackindia-team:ai-for-lawyers-hac
 
 > **Live app:** https://casepilot-neural-ninjas.web.app
 >
-> **Status:** in development. Days 1–4 of 8 are done and deployed: sign-in, workspaces, roles, the
-> installable PWA shell, case management, team invitations, court-order upload, Claude analysis
-> with checked citations, and lawyer review. See [Features](#features) for what works today and the
+> **Status:** in development. Days 1–5 of 8 are done and deployed: the full MVP workflow from
+> court-order upload through Claude analysis with checked citations, lawyer review, tasks, timeline
+> and dashboard. See [Features](#features) for what works today and the
 > [implementation plan](docs/IMPLEMENTATION_PLAN.md) for what comes next.
 
 ---
@@ -75,14 +75,14 @@ and confirming inferred deadlines without a lawyer.
 | Roles | Owner, admin, lawyer, paralegal and viewer, enforced on the server | ✅ Built |
 | Installable app (PWA) | Installs on Android, desktop and iOS; app shell loads offline; update prompt | ✅ Built |
 | Trusted devices | Case data is cached for offline reading only on devices the user trusts; signing out wipes it | ✅ Built |
-| Audit trail | Every change is recorded with who made it, in the same transaction | ✅ Backend built |
+| Audit trail | Every change is recorded with who made it, in the same transaction; per-case activity feed | ✅ Built |
 | Case management | Create, edit, archive and search cases; filter by status, court and lawyer; assign lawyers | ✅ Built |
 | Team | Invite by private link, verified-email acceptance, role changes, suspension | ✅ Built |
 | Private document upload | PDF and DOCX up to 15 MB, file-signature checked, private storage | ✅ Built |
 | AI summary and extraction | Directions, dates, facts and proposed tasks, with page citations checked against the text | ✅ Built |
 | Human review | Side-by-side PDF and findings; approve, edit or reject each item; bulk-approve items without warnings | ✅ Built |
-| Tasks and timeline | Kanban and list views, verified hearing dates, overdue flags | Day 5 |
-| Dashboard | Upcoming hearings, urgent tasks, recent activity | Day 5 |
+| Tasks and timeline | List and board views, a cross-case task list, verified hearing dates, dates to confirm, overdue flags, calendar | ✅ Built |
+| Dashboard | Upcoming hearings, urgent tasks, reviews waiting, recent activity | ✅ Built |
 | Case copilot | Questions about the case files, answered with document and page references | Day 6 |
 | Hindi summaries | Machine-translated summaries, clearly labelled | Day 6 |
 
