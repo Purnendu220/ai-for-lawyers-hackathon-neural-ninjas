@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "casepilot-dev",
+    "dev": "casepilot-dev",
+    "demo": "casepilot-demo"
+  }
+}

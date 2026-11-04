@@ -1,0 +1,37 @@
+rules_version = '2';
+
+// CasePilot AI — Cloud Storage Security Rules
+// A client may upload exactly one file, to the path reserved by the startUpload callable, with the
+// declared size and type. Derived files (pages.json, chunks.json) are unmatched and therefore denied.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /orgs/{orgId}/cases/{caseId}/documents/{documentId}/original {
+
+      function member() {
+        return firestore.get(
+          /databases/(default)/documents/organizations/$(orgId)/members/$(request.auth.uid)
+        ).data;
+      }
+
+      function record() {
+        return firestore.get(
+          /databases/(default)/documents/organizations/$(orgId)/cases/$(caseId)/documents/$(documentId)
+        ).data;
+      }
+
+      allow read: if request.auth != null
+        && member().status == 'active'
+        && record().processingStatus in ['queued', 'extracting', 'analyzing', 'ready', 'failed'];
+
+      allow create: if request.auth != null
+        && member().status == 'active'
+        && record().uploadedBy == request.auth.uid
+        && record().processingStatus == 'awaiting_upload'
+        && request.resource.size == record().sizeBytes
+        && request.resource.contentType == record().mimeType;
+
+      allow update, delete: if false;
+    }
+  }
+}

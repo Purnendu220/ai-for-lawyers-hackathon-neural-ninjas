@@ -1,0 +1,100 @@
+rules_version = '2';
+
+// CasePilot AI — Firestore Security Rules
+// Clients only read. Every write goes through a callable Cloud Function (docs/ARCHITECTURE.md §5),
+// except a user's own profile preferences. Admin SDK writes bypass these rules, so functions
+// enforce authorization independently.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function memberPath(orgId) {
+      return /databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid);
+    }
+
+    function isMember(orgId) {
+      return signedIn()
+        && exists(memberPath(orgId))
+        && get(memberPath(orgId)).data.status == 'active';
+    }
+
+    function hasRole(orgId, roles) {
+      return isMember(orgId) && get(memberPath(orgId)).data.role in roles;
+    }
+
+    match /users/{uid} {
+      function changed() {
+        return request.resource.data.diff(resource.data).affectedKeys();
+      }
+
+      allow read: if signedIn() && request.auth.uid == uid;
+
+      // Only preferences are client-writable; memberships are server-maintained.
+      allow update: if signedIn()
+        && request.auth.uid == uid
+        && changed().hasOnly(['displayName', 'lastActiveOrgId', 'preferences'])
+        && (!changed().hasAny(['displayName'])
+            || (request.resource.data.displayName is string
+                && request.resource.data.displayName.size() <= 100))
+        && (!changed().hasAny(['lastActiveOrgId'])
+            || request.resource.data.lastActiveOrgId in resource.data.memberships);
+
+      allow create, delete: if false;
+    }
+
+    match /organizations/{orgId} {
+      allow read: if isMember(orgId);
+      allow write: if false;
+
+      match /members/{uid} {
+        allow read: if isMember(orgId);
+        allow write: if false;
+      }
+
+      match /invitations/{inviteId} {
+        allow read: if hasRole(orgId, ['owner', 'admin']);
+        allow write: if false;
+      }
+
+      match /usage/{day} {
+        allow read: if hasRole(orgId, ['owner', 'admin']);
+        allow write: if false;
+      }
+
+      match /auditLogs/{logId} {
+        allow read: if hasRole(orgId, ['owner', 'admin']);
+        allow write: if false;
+      }
+
+      match /jobs/{jobId} {
+        allow read: if hasRole(orgId, ['owner', 'admin', 'lawyer']);
+        allow write: if false;
+      }
+
+      // MVP policy: every active member reads every case in the organization.
+      match /cases/{caseId} {
+        allow read: if isMember(orgId);
+        allow write: if false;
+
+        match /{subcollection}/{docId} {
+          allow read: if isMember(orgId)
+            && subcollection in ['documents', 'analyses', 'tasks', 'events', 'messages'];
+          allow write: if false;
+        }
+      }
+    }
+
+    // Cross-case queries (dashboard, /tasks, /calendar). Queries must filter on orgId.
+    match /{path=**}/tasks/{taskId} {
+      allow read: if isMember(resource.data.orgId);
+    }
+
+    match /{path=**}/events/{eventId} {
+      allow read: if isMember(resource.data.orgId);
+    }
+  }
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "origin": [
+      "http://localhost:5173",
+      "http://localhost:4173",
+      "https://casepilot-dev.web.app",
+      "https://casepilot-dev.firebaseapp.com",
+      "https://casepilot-demo.web.app",
+      "https://casepilot-demo.firebaseapp.com"
+    ],
+    "method": ["GET"],
+    "maxAgeSeconds": 3600
+  }
+]

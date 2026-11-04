@@ -1,0 +1,17 @@
+{
+  "name": "@casepilot/rules-tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test:emulator": "vitest run"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^6.0.0",
+    "@types/node": "^24.19.2",
+    "firebase": "^13.2.0",
+    "typescript": "~6.0.3",
+    "vitest": "^5.1.0"
+  }
+}

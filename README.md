@@ -1,2 +1,233 @@
-# ai-for-lawyers-hackathon-neural-ninjas
+# CasePilot AI
+
+**Less paperwork. Smarter case management. Never miss a critical task.**
+
+AI-powered legal case management for Indian advocates, law firms and corporate legal teams.
+Upload a court order and CasePilot turns it into a reviewable action plan: every direction, date and
+suggested task links back to the page it came from, and nothing enters the case until a lawyer
+approves it.
+
 Hackathon team repository for Neural Ninjas - [hackindia-team:ai-for-lawyers-hackathon:neural-ninjas]
+
+> **Status:** in development. Day 1 of 8 is done: sign-in, workspaces, roles and the installable PWA
+> shell. See [Features](#features) for what works today and the
+> [implementation plan](docs/IMPLEMENTATION_PLAN.md) for what comes next.
+
+---
+
+## The idea
+
+### The problem
+
+Legal professionals manage case information across PDFs, Word files, emails, spreadsheets and
+calendars. A single court order can carry several directions, each with its own deadline and
+responsible party, buried in dense text. Missing one direction or misreading one date can have
+serious consequences for a client.
+
+### The solution
+
+CasePilot reads a court order and proposes what needs to happen next:
+
+```mermaid
+flowchart LR
+  A["Upload<br/>court order"] --> B["AI extracts<br/>directions, dates,<br/>suggested tasks"]
+  B --> C["Server checks<br/>every citation<br/>against the page"]
+  C --> D["Lawyer reviews:<br/>approve, edit<br/>or reject"]
+  D --> E["Approved items<br/>become tasks and<br/>timeline events"]
+  E --> F["Team tracks<br/>work to<br/>completion"]
+```
+
+### What makes it different
+
+- **Source-linked.** Every extracted direction, date and fact cites a page and a short quote. The
+  server checks that the quote really appears on that page; findings that fail the check are flagged
+  for review.
+- **The lawyer stays in control.** AI output is only ever a proposal. Tasks and hearing dates enter
+  the case only after an authorized person approves them.
+- **Honest about uncertainty.** "Within 14 days" is never silently turned into a confirmed deadline.
+  Conditional directions stay conditional, and unclear text is flagged instead of guessed.
+- **Built for Indian practice.** Dates in India Standard Time, English and Hindi summaries, and data
+  stored in Firebase's Mumbai region.
+
+### Who it's for
+
+| Workspace | Use |
+|---|---|
+| **Solo advocate** | Personal matters, documents, hearings and follow-ups |
+| **Law firm** | Lawyers and paralegals share case files and assign work |
+| **Corporate legal team** | Disputes, employment and regulatory matters with internal owners and external counsel |
+
+### Deliberately out of scope
+
+Predicting court outcomes, giving legal advice, filing documents or sending notices automatically,
+and confirming inferred deadlines without a lawyer.
+
+---
+
+## Features
+
+| Feature | What it does | Status |
+|---|---|---|
+| Accounts and workspaces | Email or Google sign-in; one workspace per practice, firm or legal team | ✅ Built |
+| Roles | Owner, admin, lawyer, paralegal and viewer, enforced on the server | ✅ Built |
+| Installable app (PWA) | Installs on Android, desktop and iOS; app shell loads offline; update prompt | ✅ Built |
+| Trusted devices | Case data is cached for offline reading only on devices the user trusts; signing out wipes it | ✅ Built |
+| Audit trail | Every change is recorded with who made it, in the same transaction | ✅ Backend built |
+| Case management | Create, edit, archive and search cases; assign lawyers; invite the team | Day 2 |
+| Private document upload | PDF and DOCX up to 15 MB, file-signature checked, private storage | Day 3 |
+| AI summary and extraction | Directions, dates, facts and proposed tasks, with page citations | Day 3 |
+| Human review | Side-by-side PDF and findings; approve, edit or reject each item | Day 4 |
+| Tasks and timeline | Kanban and list views, verified hearing dates, overdue flags | Day 5 |
+| Dashboard | Upcoming hearings, urgent tasks, recent activity | Day 5 |
+| Case copilot | Questions about the case files, answered with document and page references | Day 6 |
+| Hindi summaries | Machine-translated summaries, clearly labelled | Day 6 |
+
+---
+
+## Architecture
+
+```mermaid
+flowchart LR
+  subgraph Device["Browser or installed PWA"]
+    UI["React app"]
+    SW["Service worker<br/>(app shell only)"]
+  end
+
+  subgraph FB["Firebase · asia-south1 (Mumbai)"]
+    HOST["Hosting"]
+    AUTH["Authentication"]
+    FS[("Firestore")]
+    GCS[("Cloud Storage<br/>private")]
+    CALL["Callable functions<br/>(all writes)"]
+    PIPE["Background jobs<br/>extract → analyze"]
+  end
+
+  AI["OpenAI<br/>Responses API"]
+
+  UI -.- SW
+  UI --> HOST
+  UI --> AUTH
+  UI -- "live reads,<br/>security rules" --> FS
+  UI -- "upload" --> GCS
+  UI -- "every write" --> CALL
+  CALL --> FS
+  GCS -- "file uploaded" --> PIPE
+  PIPE --> FS
+  PIPE -- "structured output" --> AI
+  CALL -- "copilot" --> AI
+```
+
+- **Reads come straight from Firestore** with real-time listeners, guarded by security rules.
+- **Every write goes through a Cloud Function** that checks membership and role, validates input,
+  and writes an audit entry in the same transaction. The app cannot write case data directly.
+- **Documents are processed in the background.** An upload triggers validation, text extraction and
+  AI analysis as retry-safe queued jobs. The result waits as `pending_review` until a lawyer acts on
+  it.
+- **The AI never acts on its own.** It returns schema-validated proposals; only a lawyer's review
+  creates tasks or events.
+- **Confidential data stays out of caches and logs.** The service worker caches only the app shell,
+  logs carry IDs instead of document text, and documents are read through authenticated SDK calls,
+  never public links.
+
+Full design: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Build schedule:
+[docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md). Product blueprint:
+[CasePilot_AI_Hackathon_Blueprint.md](CasePilot_AI_Hackathon_Blueprint.md).
+
+### Tech stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React 19, TypeScript, Vite, React Router, Tailwind CSS, shadcn/ui, TanStack Query, React Hook Form, Zod |
+| PWA | vite-plugin-pwa with a custom Workbox service worker |
+| Backend | Cloud Functions for Firebase (2nd gen, Node 24) |
+| Data | Cloud Firestore, Cloud Storage for Firebase |
+| Auth and abuse control | Firebase Authentication, App Check |
+| AI | OpenAI Responses API with Structured Outputs (planned for Day 3) |
+| Shared contracts | Zod schemas and the permission matrix, used by both frontend and backend |
+
+### Repository layout
+
+```text
+.
+├─ apps/web/            React PWA
+├─ functions/           Cloud Functions (bundled with esbuild)
+├─ packages/shared/     Zod schemas, enums, permissions, paths, date helpers
+├─ tests/rules/         Firestore security-rules tests
+├─ docs/                Architecture and implementation plan
+├─ firebase.json        Hosting, Functions, emulators
+├─ firestore.rules      Firestore security rules
+├─ storage.rules        Storage security rules
+└─ firestore.indexes.json
+```
+
+---
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 24 (24.12 or later recommended)
+- Java 21, for the Firebase emulators
+
+### Run locally (no Firebase account needed)
+
+```bash
+npm install
+npm run emulators       # terminal 1: Auth, Firestore, Storage, Functions; Emulator UI on http://localhost:4000
+npm run dev:emulator    # terminal 2: the app on http://localhost:5173
+```
+
+The emulators run a local demo project (`demo-casepilot`) with no cloud resources.
+
+### Connect a real Firebase project
+
+1. Create the project on the Blaze plan, with Firestore and Storage in `asia-south1`. This region
+   cannot be changed later.
+2. Enable Email/Password and Google sign-in.
+3. Put the project ID in `.firebaserc`, then copy `apps/web/.env.example` to `apps/web/.env.local`
+   and fill in the web config.
+4. Deploy with `npx firebase deploy`.
+
+### Scripts
+
+| Command | What it does |
+|---|---|
+| `npm run dev:emulator` | Web app against the local emulators |
+| `npm run dev` | Web app against the project in `.env.local` |
+| `npm run emulators` | Build the functions and start the emulators |
+| `npm run build` | Build the functions and the web app |
+| `npm run typecheck` | Typecheck every workspace |
+| `npm run lint` | ESLint across the repo |
+| `npm test` | Unit tests |
+| `npm run test:rules` | Security-rules tests against the Firestore emulator |
+
+### Troubleshooting
+
+- **"Cannot determine backend specification. Timeout after 10000"** on the first emulator start:
+  the first load of the functions was slow. Run `npm run build -w @casepilot/functions` and the
+  emulator reloads them, or set `FUNCTIONS_DISCOVERY_TIMEOUT=30` before starting.
+- **"Could not start Firestore Emulator, port taken"**: an emulator from an earlier run is still
+  alive. On Windows, end the leftover `java.exe` running `cloud-firestore-emulator` in Task Manager.
+  Firestore runs on port 8180, not the default 8080, because 8080 is often blocked on Windows.
+- **The first callable request times out locally**: on some Windows machines the function worker
+  takes 30 seconds or more to start the first time. Retry once it has warmed up.
+
+---
+
+## Responsible AI and data protection
+
+- Demo data is synthetic and clearly labelled; no real client documents are used.
+- Uploaded documents are treated as untrusted input; embedded instructions are ignored.
+- AI requests are made only from the server, with `store: false`; API keys never reach the browser.
+- Before use with real client data, the AI provider's data terms, professional confidentiality
+  duties and the Digital Personal Data Protection Act, 2023 need review.
+
+---
+
+## Team
+
+**Neural Ninjas**, HackIndia AI for Lawyers hackathon.
+
+## License
+
+[MIT](LICENSE)
