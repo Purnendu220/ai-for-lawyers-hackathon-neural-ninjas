@@ -1,6 +1,12 @@
 import type { z } from 'zod';
 import { ArchiveCaseInput, CreateCaseInput, CreateCaseOutput, UpdateCaseInput } from './schemas/case';
 import { OkOutput } from './schemas/common';
+import {
+  AnalyzeDocumentOutput,
+  DocumentRef,
+  StartUploadInput,
+  StartUploadOutput,
+} from './schemas/document';
 import { CreateOrganizationInput, CreateOrganizationOutput } from './schemas/org';
 import {
   AcceptInvitationOutput,
@@ -23,6 +29,8 @@ export const callables = {
   createCase: { input: CreateCaseInput, output: CreateCaseOutput },
   updateCase: { input: UpdateCaseInput, output: OkOutput },
   archiveCase: { input: ArchiveCaseInput, output: OkOutput },
+  startUpload: { input: StartUploadInput, output: StartUploadOutput },
+  analyzeDocument: { input: DocumentRef, output: AnalyzeDocumentOutput },
 } as const;
 
 export type CallableName = keyof typeof callables;

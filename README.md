@@ -77,8 +77,8 @@ and confirming inferred deadlines without a lawyer.
 | Audit trail | Every change is recorded with who made it, in the same transaction | ✅ Backend built |
 | Case management | Create, edit, archive and search cases; filter by status, court and lawyer; assign lawyers | ✅ Built |
 | Team | Invite by private link, verified-email acceptance, role changes, suspension | ✅ Built |
-| Private document upload | PDF and DOCX up to 15 MB, file-signature checked, private storage | Day 3 (file checks and text extraction built) |
-| AI summary and extraction | Directions, dates, facts and proposed tasks, with page citations | Day 3 |
+| Private document upload | PDF and DOCX up to 15 MB, file-signature checked, private storage | ✅ Built |
+| AI summary and extraction | Directions, dates, facts and proposed tasks, with page citations checked against the text | ✅ Built (live once the API key is set) |
 | Human review | Side-by-side PDF and findings; approve, edit or reject each item | Day 4 |
 | Tasks and timeline | Kanban and list views, verified hearing dates, overdue flags | Day 5 |
 | Dashboard | Upcoming hearings, urgent tasks, recent activity | Day 5 |
@@ -105,7 +105,7 @@ flowchart LR
     PIPE["Background jobs<br/>extract → analyze"]
   end
 
-  AI["OpenAI<br/>Responses API"]
+  AI["Claude<br/>Anthropic API"]
 
   UI -.- SW
   UI --> HOST
@@ -145,7 +145,7 @@ Full design: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Build schedule:
 | Backend | Cloud Functions for Firebase (2nd gen, Node 24) |
 | Data | Cloud Firestore, Cloud Storage for Firebase |
 | Auth and abuse control | Firebase Authentication, App Check |
-| AI | OpenAI Responses API with Structured Outputs (planned for Day 3) |
+| AI | Claude (`claude-opus-5-5`) through the Anthropic API, with structured outputs |
 | Shared contracts | Zod schemas and the permission matrix, used by both frontend and backend |
 
 ### Repository layout
@@ -183,6 +183,11 @@ npm run dev:emulator    # terminal 2: the app on http://localhost:5173
 ```
 
 The emulators run a local demo project (`demo-casepilot`) with no cloud resources.
+
+Locally, AI analysis runs in **replay mode**: uploading `seed/samples/sample-order.pdf` replays a
+hand-written test analysis (labelled in the app as test data), and any other file stops with "no
+recorded analysis". To use live Claude locally, put `AI_MODE=live` in `functions/.env.local` and
+`ANTHROPIC_API_KEY=<your key>` in `functions/.secret.local`. Both files are gitignored.
 
 ### Deploy
 
@@ -244,7 +249,8 @@ To use your own project instead, create one with Firestore in `asia-south1`, put
 
 - Demo data is synthetic and clearly labelled; no real client documents are used.
 - Uploaded documents are treated as untrusted input; embedded instructions are ignored.
-- AI requests are made only from the server, with `store: false`; API keys never reach the browser.
+- AI requests are made only from the server; the Anthropic API key lives in Secret Manager and never
+  reaches the browser. Anthropic's data-retention terms apply to what is sent.
 - Before use with real client data, the AI provider's data terms, professional confidentiality
   duties and the Digital Personal Data Protection Act, 2023 need review.
 

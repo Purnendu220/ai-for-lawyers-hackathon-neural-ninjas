@@ -22,6 +22,9 @@ const ORDER = {
 };
 
 const out = (name) => new URL(name, import.meta.url);
+// Fixed dates keep the files byte-identical between runs, so their SHA-256 (used to look up
+// recorded analyses) only changes when the content does.
+const FIXED_DATE = new Date('2026-11-02T00:00:00Z');
 
 function wrap(text, font, size, width) {
   const lines = [];
@@ -43,6 +46,8 @@ async function orderPdf() {
   const pdf = await PDFDocument.create();
   pdf.setTitle(`${ORDER.title} - ${STAMP}`);
   pdf.setSubject(STAMP);
+  pdf.setCreationDate(FIXED_DATE);
+  pdf.setModificationDate(FIXED_DATE);
   const regular = await pdf.embedFont(StandardFonts.TimesRoman);
   const bold = await pdf.embedFont(StandardFonts.TimesRomanBold);
   const page = pdf.addPage([595, 842]); // A4
@@ -73,6 +78,8 @@ async function orderPdf() {
 async function blankPdf() {
   const pdf = await PDFDocument.create();
   pdf.setSubject(STAMP);
+  pdf.setCreationDate(FIXED_DATE);
+  pdf.setModificationDate(FIXED_DATE);
   pdf.addPage([595, 842]);
   return pdf.save();
 }
@@ -89,27 +96,32 @@ function orderDocx() {
     ...ORDER.directions.map((d) => paragraph(d)),
     paragraph(DISCLAIMER),
   ].join('');
-  return zipSync({
-    '[Content_Types].xml': strToU8(
-      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
-        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
-        '<Default Extension="xml" ContentType="application/xml"/>' +
-        '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
-        '</Types>',
-    ),
-    '_rels/.rels': strToU8(
-      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
-        '</Relationships>',
-    ),
-    'word/document.xml': strToU8(
-      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">' +
-        `<w:body>${body}</w:body></w:document>`,
-    ),
-  });
+  // fflate stamps each entry with this time unless told otherwise.
+  const mtime = FIXED_DATE;
+  return zipSync(
+    {
+      '[Content_Types].xml': strToU8(
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+          '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+          '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+          '<Default Extension="xml" ContentType="application/xml"/>' +
+          '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
+          '</Types>',
+      ),
+      '_rels/.rels': strToU8(
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+          '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+          '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
+          '</Relationships>',
+      ),
+      'word/document.xml': strToU8(
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+          '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">' +
+          `<w:body>${body}</w:body></w:document>`,
+      ),
+    },
+    { mtime },
+  );
 }
 
 writeFileSync(out('sample-order.pdf'), await orderPdf());

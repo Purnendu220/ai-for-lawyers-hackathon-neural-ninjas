@@ -1,5 +1,25 @@
-import type { CaseStatus, Language, MemberStatus, Role, WorkspaceType } from './enums';
+import type { AllowedMimeType } from './constants';
+import type {
+  AnalysisStatus,
+  CaseStatus,
+  DocumentStatus,
+  ItemDecision,
+  JobStatus,
+  JobType,
+  Language,
+  MemberStatus,
+  Role,
+  SourceUnit,
+  WorkspaceType,
+} from './enums';
 import type { OrgPolicy } from './permissions';
+import type {
+  ExtractedDate,
+  ExtractedDirection,
+  ExtractedFact,
+  Extraction,
+  ProposedTask,
+} from './schemas/extraction';
 
 /**
  * Firestore document shapes. `TS` is the Timestamp class of whichever SDK reads the document
@@ -85,8 +105,10 @@ export type AuditAction =
   | 'case.archived'
   | 'case.restored'
   | 'invitation.revoked'
+  | 'document.upload_started'
   | 'document.uploaded'
   | 'document.rejected'
+  | 'analysis.requested'
   | 'analysis.created'
   | 'analysis.item.approved'
   | 'analysis.item.edited'
@@ -120,4 +142,100 @@ export type AuditLogDoc<TS> = {
   caseId: string | null;
   timestamp: TS;
   metadata: AuditMetadata;
+};
+
+export type DocumentDoc<TS> = {
+  /** The user's file name. Shown in the app only; never logged or used in a storage path. */
+  fileName: string;
+  mimeType: AllowedMimeType;
+  sizeBytes: number;
+  storagePath: string;
+  processingStatus: DocumentStatus;
+  uploadedBy: string;
+  uploadedAt: TS;
+  /** An upload not finished by then is cleaned up. */
+  uploadExpiresAt: TS;
+  sha256: string | null;
+  duplicateOfDocumentId: string | null;
+  sourceUnit: SourceUnit | null;
+  pageCount: number | null;
+  /** Codes such as `page_3_no_text`. */
+  warnings: string[];
+  errorCode: string | null;
+  /** User-facing explanation when rejected or failed. */
+  errorMessage: string | null;
+  latestAnalysisId: string | null;
+  /** Run counters, so a retry gets a fresh job and task ID. */
+  extractRun: number;
+  analysisRun: number;
+  updatedAt: TS;
+};
+
+/** Where an extracted item comes from, checked by the server against the page text. */
+export type SourceRef = {
+  documentId: string;
+  unit: SourceUnit;
+  page: number | null;
+  quote: string | null;
+  /** The quote was found in the document text. */
+  verified: boolean;
+  /** The quote was found on a different page than the model cited; `page` is the corrected one. */
+  pageCorrected: boolean;
+};
+
+export type AnalysisItemReview<TS> = {
+  itemId: string;
+  sourceRef: SourceRef;
+  decision: ItemDecision;
+  decidedBy: string | null;
+  decidedAt: TS | null;
+  resultEntityId: string | null;
+};
+
+type WithoutSource<T> = Omit<T, 'sourcePage' | 'sourceQuote'>;
+
+export type AnalysisFact<TS> = WithoutSource<ExtractedFact> & AnalysisItemReview<TS>;
+export type AnalysisDirection<TS> = WithoutSource<ExtractedDirection> & AnalysisItemReview<TS>;
+export type AnalysisDate<TS> = WithoutSource<ExtractedDate> & AnalysisItemReview<TS>;
+export type AnalysisTask<TS> = WithoutSource<ProposedTask> & AnalysisItemReview<TS>;
+
+export type AnalysisDoc<TS> = {
+  documentId: string;
+  status: AnalysisStatus;
+  /** 'fixture' analyses are replays and are labelled as such in the app. */
+  mode: 'live' | 'fixture';
+  model: string;
+  promptVersion: string;
+  summary: string;
+  language: Language;
+  caseDetails: Extraction['caseDetails'];
+  facts: AnalysisFact<TS>[];
+  directions: AnalysisDirection<TS>[];
+  dates: AnalysisDate<TS>[];
+  proposedTasks: AnalysisTask<TS>[];
+  /** From the model (unclear text) and from the server (pages not analysed). */
+  warnings: string[];
+  pagesAnalysed: number;
+  pageCount: number;
+  usage: { inputTokens: number; outputTokens: number } | null;
+  latencyMs: number;
+  createdAt: TS;
+  reviewedBy: string | null;
+  reviewedAt: TS | null;
+};
+
+export type JobDoc<TS> = {
+  type: JobType;
+  caseId: string;
+  documentId: string;
+  status: JobStatus;
+  run: number;
+  attempts: number;
+  requestedBy: string;
+  leaseExpiresAt: TS | null;
+  queuedAt: TS;
+  startedAt: TS | null;
+  completedAt: TS | null;
+  durationMs: number | null;
+  errorCode: string | null;
 };

@@ -40,9 +40,10 @@ apply the [cut list](#cut-list).
       `web.app` and `firebaseapp.com` domains are authorized by default.
 - [ ] **App Check.** Register the web app with reCAPTCHA Enterprise and create debug tokens for
       local development. Don't enforce yet.
-- [ ] **OpenAI.**
-  - [ ] Create a project key with a monthly spend cap.
-  - [ ] Run `firebase functions:secrets:set OPENAI_API_KEY`.
+- [ ] **Anthropic (Claude).**
+  - [x] Get an API key.
+  - [ ] Set a monthly spend limit on it in the Claude Console.
+  - [ ] Run `npx firebase functions:secrets:set ANTHROPIC_API_KEY`.
 - [x] **Repository.**
   - [x] npm workspaces skeleton: `apps/web`, `functions`, `packages/shared`.
   - [x] Shared `tsconfig`, ESLint, Prettier.
@@ -142,28 +143,32 @@ with the rules tests passing; and an invite can be sent and accepted.
 ## Day 3 — Upload to summary (vertical slice)
 
 **WEB**
-- [ ] Documents tab:
-  - [ ] Drag-and-drop with `uploadBytesResumable` progress.
-  - [ ] Live `ProcessingStatus` chips.
-  - [ ] Retry on failed documents.
-- [ ] PDF viewer (`react-pdf`, lazy) fed by `getBlob`.
-- [ ] AI review page v0: the summary and extracted items, read-only, with page numbers.
+- [x] Documents tab:
+  - [x] Drag-and-drop with `uploadBytesResumable` progress.
+  - [x] Live `ProcessingStatus` chips.
+  - [x] Retry on failed documents.
+- [x] PDF viewer (`react-pdf`, lazy) fed by `getBlob`.
+- [x] AI review page v0: the summary and extracted items, read-only, with page numbers.
 
 **API**
-- [ ] `startUpload`, `storage.rules`, `storage.cors.json` applied to the dev bucket.
-- [ ] `onUploadFinalized`: validation, SHA-256, duplicate detection, rejection cleanup.
-- [ ] `processDocument` and `runAnalysis` task-queue functions, the job claim and lease, and
+- [x] `startUpload`, `storage.rules`, `storage.cors.json` applied to the dev bucket.
+- [x] `onUploadFinalized`: validation, SHA-256, duplicate detection, rejection cleanup.
+- [x] `processDocument` and `runAnalysis` task-queue functions, the job claim and lease, and
       deterministic IDs.
-- [ ] `analyzeDocument` for retries.
+- [x] `analyzeDocument` for retries.
 
 **AI**
-- [ ] OpenAI provider: Responses API, `zodTextFormat`, `store: false`, Zod revalidation.
-- [ ] Page-marked prompt input with marker spoofing stripped.
-- [ ] Citation verifier (ARCHITECTURE §6.2).
-- [ ] Record the first good live run on the sample order as the fixture.
+- [x] Claude provider: `claude-opus-5-5`, structured outputs, refusal fallback, Zod revalidation.
+- [x] Page-marked prompt input with marker spoofing stripped.
+- [x] Citation verifier (ARCHITECTURE §6.2).
+- [ ] Record the first good live run on the sample order as the fixture (needs the API key).
 
 **Gate G2: vertical slice.** On dev, uploading the sample order shows a summary and directions with
 page references within about a minute. If not, apply the cut list before starting Day 4.
+
+> **Status, 4 Nov 2026:** built and tested on the emulators: 20 integration tests cover upload,
+> rejection, extraction, analysis, citation checks and re-runs. The live gate waits on the
+> `ANTHROPIC_API_KEY` secret and the Storage cross-service permission.
 
 ---
 
@@ -319,7 +324,7 @@ tenant isolation tests, audit log, honest fixture labelling.
 
 | Risk | Likelihood | Mitigation |
 |---|---|---|
-| OpenAI latency or outage during the demo | Medium | Labelled fixture fallback; `minInstances` warm; rehearsal includes the fallback path |
+| Claude latency or outage during the demo | Medium | Labelled fixture fallback; `minInstances` warm; rehearsal includes the fallback path |
 | Model output fails schema or citation checks | Medium | Zod revalidation; failed analyses retry; unverified items are flagged, not dropped; the eval suite catches regressions |
 | Composite indexes still building at the gate | Medium | Deploy indexes on Day 2; the Firestore error message links to the missing index |
 | Google sign-in breaks in the installed iOS app | Medium | Redirect fallback, same-origin `authDomain`, `/__/` denylist in the service worker; test on a real iPhone by Day 7 |
@@ -327,7 +332,7 @@ tenant isolation tests, audit log, honest fixture labelling.
 | Workspace package missing at functions deploy | Medium | tsup bundles `packages/shared`; CI runs a deploy dry-run build |
 | Region created wrong | Low, but permanent | Day 0 checklist; verify in the console before writing data |
 | DOCX citations confuse users | Low | Show "Section n" for DOCX; the demo uses the PDF |
-| Cost runaway from retries or abuse | Low | Task-queue `maxAttempts` and `maxConcurrentDispatches`, per-org quota, App Check, OpenAI spend cap |
+| Cost runaway from retries or abuse | Low | Task-queue `maxAttempts` and `maxConcurrentDispatches`, per-org quota, App Check, Anthropic spend cap |
 
 ---
 

@@ -24,8 +24,8 @@
 | Scheduling | `onSchedule` functions (Cloud Scheduler), time zone `Asia/Kolkata` |
 | Database | Cloud Firestore, Native mode, `asia-south1` (Mumbai) |
 | Files | Cloud Storage for Firebase, `asia-south1`, private. Read through the SDK (`getBlob`), never through permanent download URLs |
-| AI | OpenAI Responses API with Structured Outputs and `store: false`, behind an `AiProvider` interface. A fixture provider serves tests and the demo fallback |
-| Secrets | `OPENAI_API_KEY` in Secret Manager via `defineSecret` |
+| AI | Claude (`claude-opus-5-5`) through the Anthropic API with structured outputs, behind an `AiProvider` interface. A fixture provider serves tests and the demo fallback |
+| Secrets | `ANTHROPIC_API_KEY` in Secret Manager via `defineSecret` |
 | Abuse control | App Check (reCAPTCHA Enterprise) enforced on callables and Storage; per-organization daily AI quota |
 | Shared contracts | `packages/shared`: Zod schemas, enums, the permission matrix and path builders, imported by both web and functions |
 
@@ -56,7 +56,7 @@ flowchart LR
     SECRET["Secret Manager"]
   end
 
-  OAI["OpenAI Responses API"]
+  OAI["Claude<br/>Anthropic API"]
 
   UI -.- SW
   UI -.- LC
@@ -73,10 +73,10 @@ flowchart LR
   QUEUE -- "Admin SDK" --> FS
   QUEUE -- "pages.json, chunks.json" --> GCS
   SCHED -- "Admin SDK" --> FS
-  QUEUE -- "extraction, store=false" --> OAI
+  QUEUE -- "extraction" --> OAI
   CALL -- "copilot, translation" --> OAI
-  SECRET -. "OPENAI_API_KEY" .-> QUEUE
-  SECRET -. "OPENAI_API_KEY" .-> CALL
+  SECRET -. "ANTHROPIC_API_KEY" .-> QUEUE
+  SECRET -. "ANTHROPIC_API_KEY" .-> CALL
 ```
 
 Three paths carry all traffic:
@@ -394,7 +394,7 @@ sequenceDiagram
   participant T as onUploadFinalized
   participant P as processDocument
   participant A as runAnalysis
-  participant AI as OpenAI
+  participant AI as Claude
   participant D as Firestore
 
   L->>W: Drop court order PDF
@@ -481,7 +481,7 @@ document record in `awaiting_upload` with `uploadedBy`, `sizeBytes`, `mimeType` 
   | Function | Settings |
   |---|---|
   | All task-queue functions | `retryConfig: { maxAttempts: 3, minBackoffSeconds: 30 }`, `timeoutSeconds: 540` |
-  | `runAnalysis` | `rateLimits: { maxConcurrentDispatches: 5 }` to bound OpenAI concurrency |
+  | `runAnalysis` | `rateLimits: { maxConcurrentDispatches: 5 }` to bound concurrent Claude calls |
   | `processDocument` | `memory: '1GiB'`, `concurrency: 1` |
 - **Recovery.** `recoverStuckJobs` re-enqueues expired leases while attempts remain, otherwise marks
   them `failed`. It also deletes `awaiting_upload` records past `uploadExpiresAt`.
@@ -556,19 +556,26 @@ Upgrade path: multilingual embeddings on chunks with Firestore vector search (`f
 ```text
 functions/src/ai/
 ├─ provider.ts          interface AiProvider { extract(); answer(); planActions(); translate(); }
-├─ openai.ts            Responses API implementation
+├─ anthropic.ts         Claude implementation (Anthropic SDK)
 ├─ fixture.ts           replays recorded outputs (tests, emulator, demo fallback)
 ├─ prompts/             extract.v1.ts · copilot.v1.ts · actionPlan.v1.ts · translate.v1.ts
 ├─ citations.ts         quote verification (§6.2)
 └─ retrieval.ts         MiniSearch index over chunks
 ```
 
-- **Provider and model.** The param `AI_MODE` (`live` | `fixture`) picks the provider; `AI_MODEL`
-  picks a current OpenAI model that supports Structured Outputs. Every analysis and message records
-  `mode`, `model` and `promptVersion`.
+- **Provider and model.** `AI_MODE=fixture` replays recordings (emulator and tests); otherwise
+  the provider calls Claude, `claude-opus-5-5`. Every analysis records `mode`, `model` (the model
+  that actually answered) and `promptVersion`.
 - **Call shape.**
-  `client.responses.parse({ model, input, text: { format: zodTextFormat(ExtractionSchema, 'extraction') }, store: false })`.
-  The result is then validated again with Zod, per blueprint §8.
+  `client.beta.messages.parse({ model, max_tokens: 16000, output_config: { effort: 'high', format: betaZodOutputFormat(Extraction) }, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default', system, messages })`.
+  The reply is validated again with Zod, per blueprint §8. `stop_reason` `refusal` and
+  `max_tokens` fail the job with a message for the user instead of saving a partial analysis.
+- **Refusal fallback.** On a safety decline the API retries on a fallback model it picks by
+  refusal category, inside the same call. Remove `fallbacks` to make declines final.
+- **Enums are hints.** The SDK turns enum constraints into schema descriptions, so Zod
+  revalidation is what enforces them; a reply that fails it is retried by the task queue.
+- **Citations.** Claude's built-in citations can't be combined with structured outputs, so
+  CasePilot checks every quote itself (§6.2).
 - **Strict mode.** Strict Structured Outputs require every key, so schemas sent to the model use
   `.nullable()`, never `.optional()`.
 - **Prompt versions.** Prompts are versioned code. Changing the text means a new version, and old
@@ -804,16 +811,16 @@ service firebase.storage {
 - **Billing.** The Blaze plan is required for Functions, Secret Manager and Cloud Tasks. Set a
   budget alert on both projects.
 - **Configuration:**
-  - Functions use `defineSecret('OPENAI_API_KEY')`, `defineString('AI_MODEL')` and
-    `defineString('AI_MODE')`.
+  - Functions use `defineSecret('ANTHROPIC_API_KEY')`; `AI_MODE` comes from `functions/.env*`
+    (`.env.demo-casepilot` sets replay mode for the emulator).
   - The web app reads `VITE_FIREBASE_*` and `VITE_APPCHECK_SITE_KEY`. The Firebase web config is
-    public by design; the OpenAI key never is.
+    public by design; the Anthropic key never is.
 - **CI (GitHub Actions):**
   - On every PR: typecheck, lint, unit tests, then rules and function tests under
     `firebase emulators:exec`, then the build and a Hosting preview channel.
   - A merge to `main` deploys to dev.
   - Demo deploys are manual.
-  - CI also greps `apps/web/dist` for `sk-` and `OPENAI` to prove no key ships in the bundle.
+  - CI also greps `apps/web/dist` for API-key patterns to prove no key ships in the bundle.
 - **Demo day.** Set `minInstances: 1` on `startUpload`, `runAnalysis`, `reviewAnalysis` and
   `askCaseCopilot` to remove cold starts. Revert afterwards.
 
@@ -875,13 +882,15 @@ These are goals to measure against, not results.
 | Cloud Tasks "or equivalent" | Firebase task-queue functions | Native retries, rate limits and task-ID deduplication |
 | No user-to-organization lookup | `users.memberships`, an `invitations` collection, and `acceptInvitation` | Needed for the org switcher and invites |
 | No PWA | §4.6 | New requirement |
+| OpenAI Responses API | Claude through the Anthropic API (§6.1) | Team decision; the `AiProvider` interface kept the change to one file |
 
 ---
 
 ## 14. Open questions
 
 1. **Team size and dates.** The plan assumes 8 working days and 2–4 people.
-2. **OpenAI data terms and processing location.** Use synthetic data only until reviewed, per
-   blueprint §13.
+2. **Anthropic data terms and processing location.** Requests leave India for Anthropic's API.
+   Use synthetic data only until the retention terms (and zero-data-retention options) are
+   reviewed, per blueprint §13.
 3. **Custom domain.** It affects `authDomain`, the App Check site registration and Storage CORS.
 4. **Paralegal approval default.** Off, unless a target customer says otherwise.

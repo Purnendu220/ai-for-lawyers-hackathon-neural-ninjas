@@ -29,7 +29,7 @@ jobs:
       - run: npm run build
 
       - name: No API keys in the web bundle
-        run: "! grep -rEl 'sk-[A-Za-z0-9_-]{20,}|OPENAI_API_KEY' apps/web/dist"
+        run: "! grep -rEl 'sk-ant-[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9_-]{32,}|ANTHROPIC_API_KEY' apps/web/dist"
 
       - name: Security rules tests
         run: npm run test:rules

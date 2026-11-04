@@ -99,3 +99,52 @@ export async function warmUp(names: string[]): Promise<void> {
     }
   }
 }
+
+const STORAGE = 'http://127.0.0.1:9199/v0/b/demo-casepilot.appspot.com/o';
+
+/** Uploads like the web SDK does, so Storage rules apply. Returns the HTTP status. */
+export async function uploadObject(
+  path: string,
+  bytes: Uint8Array,
+  contentType: string,
+  user: TestUser,
+): Promise<number> {
+  const response = await fetch(`${STORAGE}?uploadType=media&name=${encodeURIComponent(path)}`, {
+    method: 'POST',
+    headers: { authorization: `Firebase ${user.token}`, 'content-type': contentType },
+    body: bytes,
+  });
+  return response.status;
+}
+
+/** Downloads an object as `user`. Returns the HTTP status. */
+export async function downloadStatus(path: string, user: TestUser): Promise<number> {
+  const response = await fetch(`${STORAGE}/${encodeURIComponent(path)}?alt=media`, {
+    headers: { authorization: `Firebase ${user.token}` },
+  });
+  return response.status;
+}
+
+/** Polls a Firestore document until `done` accepts it. */
+export async function waitForDoc(
+  path: string,
+  user: TestUser,
+  done: (doc: Record<string, unknown>) => boolean,
+  timeoutMs = 240_000,
+): Promise<Record<string, unknown>> {
+  const deadline = Date.now() + timeoutMs;
+  for (;;) {
+    const doc = await readDoc(path, user);
+    if (done(doc)) return doc;
+    if (Date.now() > deadline) throw new Error(`Timed out waiting for ${path}: ${JSON.stringify(doc)}`);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+}
+
+/** Checks an object with the emulator's admin bypass (Security Rules skipped). Returns the HTTP status. */
+export async function adminObjectStatus(path: string): Promise<number> {
+  const response = await fetch(`${STORAGE}/${encodeURIComponent(path)}`, {
+    headers: { authorization: 'Bearer owner' },
+  });
+  return response.status;
+}

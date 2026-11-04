@@ -16,13 +16,19 @@ export const paths = {
   cases: (orgId: string) => `organizations/${orgId}/cases`,
   case: (orgId: string, caseId: string) => `organizations/${orgId}/cases/${caseId}`,
   documents: (orgId: string, caseId: string) => `organizations/${orgId}/cases/${caseId}/documents`,
+  document: (orgId: string, caseId: string, documentId: string) =>
+    `organizations/${orgId}/cases/${caseId}/documents/${documentId}`,
   analyses: (orgId: string, caseId: string) => `organizations/${orgId}/cases/${caseId}/analyses`,
+  analysis: (orgId: string, caseId: string, analysisId: string) =>
+    `organizations/${orgId}/cases/${caseId}/analyses/${analysisId}`,
   tasks: (orgId: string, caseId: string) => `organizations/${orgId}/cases/${caseId}/tasks`,
   events: (orgId: string, caseId: string) => `organizations/${orgId}/cases/${caseId}/events`,
   messages: (orgId: string, caseId: string) => `organizations/${orgId}/cases/${caseId}/messages`,
 };
 
 /** Cloud Storage object paths. The object name is fixed; user file names never reach a path. */
+export const ORIGINAL_UPLOAD_PATH = /^orgs\/([A-Za-z0-9_-]+)\/cases\/([A-Za-z0-9_-]+)\/documents\/([A-Za-z0-9_-]+)\/original$/;
+
 export const storagePaths = {
   documentFolder: (orgId: string, caseId: string, documentId: string) =>
     `orgs/${orgId}/cases/${caseId}/documents/${documentId}`,

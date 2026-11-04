@@ -1,10 +1,14 @@
 import { Extraction } from '@casepilot/shared';
+import { PermanentJobError } from '../core/errors';
 import { EXTRACT_PROMPT_VERSION } from './prompts/extract.v1';
 import type { AiProvider } from './provider';
 
-export class FixtureNotFoundError extends Error {
+export class FixtureNotFoundError extends PermanentJobError {
   constructor(sha256: string) {
-    super(`No recorded extraction for document ${sha256.slice(0, 12)}…`);
+    super(
+      'no_recording',
+      `Replay mode has no recorded analysis for this file (${sha256.slice(0, 12)}…). Live AI is off here.`,
+    );
     this.name = 'FixtureNotFoundError';
   }
 }

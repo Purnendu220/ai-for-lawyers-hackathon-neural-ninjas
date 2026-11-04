@@ -1,0 +1,110 @@
+{
+  "e9ebde9fed820c3770f78fe73ca6c650f4cb8fe26d923d250f54c4b9a7d488e6": {
+    "documentSummary": "HAND-WRITTEN TEST FIXTURE, NOT MODEL OUTPUT. A fictional order in ABC Traders v. XYZ Supplies dated 2 November 2026 directs the plaintiff to file an updated statement of account, allows the defendant to respond after service, and lists the matter for 15 December 2026.",
+    "language": "en",
+    "caseDetails": {
+      "caseNumber": null,
+      "courtName": "Demo Civil Court, Delhi",
+      "caseType": null,
+      "parties": ["ABC Traders", "XYZ Supplies"],
+      "dateOfOrder": "2026-11-02"
+    },
+    "facts": [
+      {
+        "fact": "The order is dated 2 November 2026.",
+        "sourcePage": 1,
+        "sourceQuote": "Order dated 2 November 2026"
+      },
+      {
+        "fact": "Deliberately unsupported test fact: costs were imposed.",
+        "sourcePage": 1,
+        "sourceQuote": "costs of Rs. 50,000 are imposed on the defendant"
+      }
+    ],
+    "directions": [
+      {
+        "direction": "The plaintiff shall file its updated statement of account within 14 days from the date of the order.",
+        "directionType": "explicit",
+        "condition": null,
+        "responsibleParty": "Plaintiff",
+        "sourcePage": 1,
+        "sourceQuote": "The plaintiff shall file its updated statement of account within 14 days from the date of this order"
+      },
+      {
+        "direction": "The defendant may file a response within 14 days after service of the updated statement of account.",
+        "directionType": "conditional",
+        "condition": "The updated statement of account is served on the defendant.",
+        "responsibleParty": "Defendant",
+        "sourcePage": 1,
+        "sourceQuote": "The defendant may file a response within 14 days after service of the updated statement of account"
+      },
+      {
+        "direction": "Both parties shall ensure their authorized representatives are available on the next date.",
+        "directionType": "explicit",
+        "condition": null,
+        "responsibleParty": "Both parties",
+        "sourcePage": 1,
+        "sourceQuote": "Both parties shall ensure that their authorized representatives are available on the next date"
+      }
+    ],
+    "dates": [
+      {
+        "dateText": "2 November 2026",
+        "normalizedDate": "2026-11-02",
+        "dateType": "order_date",
+        "basis": "explicit",
+        "sourcePage": 1,
+        "sourceQuote": "Order dated 2 November 2026"
+      },
+      {
+        "dateText": "within 14 days from the date of this order",
+        "normalizedDate": null,
+        "dateType": "filing_deadline",
+        "basis": "relative_to_order",
+        "sourcePage": 1,
+        "sourceQuote": "within 14 days from the date of this order"
+      },
+      {
+        "dateText": "15 December 2026",
+        "normalizedDate": "2026-12-15",
+        "dateType": "hearing",
+        "basis": "explicit",
+        "sourcePage": 1,
+        "sourceQuote": "listed for the next hearing on 15 December 2026"
+      }
+    ],
+    "proposedTasks": [
+      {
+        "title": "Prepare and file the updated statement of account",
+        "description": "Prepare the plaintiff's updated statement of account and file it within the period the order sets. The exact due date needs a lawyer's confirmation.",
+        "priority": "high",
+        "suggestedDueDate": null,
+        "dueDateBasis": "relative_to_order",
+        "condition": null,
+        "sourcePage": 1,
+        "sourceQuote": "shall file its updated statement of account within 14 days"
+      },
+      {
+        "title": "Record the service date and work out the response window",
+        "description": "Once the updated statement is served, note the service date so the defendant's 14-day response period can be calculated.",
+        "priority": "high",
+        "suggestedDueDate": null,
+        "dueDateBasis": "relative_to_service",
+        "condition": "After the updated statement of account is served.",
+        "sourcePage": 1,
+        "sourceQuote": "within 14 days after service of the updated statement of account"
+      },
+      {
+        "title": "Confirm representatives for the next hearing",
+        "description": "Make sure an authorized representative is available for the hearing listed on 15 December 2026.",
+        "priority": "medium",
+        "suggestedDueDate": null,
+        "dueDateBasis": "none",
+        "condition": null,
+        "sourcePage": 1,
+        "sourceQuote": "authorized representatives are available on the next date"
+      }
+    ],
+    "warnings": ["Hand-written test fixture: this analysis was not produced by an AI model."]
+  }
+}

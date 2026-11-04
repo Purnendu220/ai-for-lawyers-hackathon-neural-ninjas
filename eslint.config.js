@@ -23,7 +23,7 @@ export default defineConfig([
     languageOptions: { globals: globals.serviceworker },
   },
   {
-    files: ['functions/**/*.{ts,mjs}', 'tests/**/*.ts', 'seed/**/*.mjs', '**/*.config.{ts,js}'],
+    files: ['functions/**/*.{ts,mjs}', 'tests/**/*.ts', 'seed/**/*.mjs', 'scripts/**/*.mjs', '**/*.config.{ts,js}'],
     languageOptions: { globals: globals.node },
   },
   {
