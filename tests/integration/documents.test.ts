@@ -4,7 +4,9 @@ import {
   adminObjectStatus,
   call,
   createUser,
+  deliverTask,
   downloadStatus,
+  listDocs,
   readDoc,
   uploadObject,
   waitForDoc,
@@ -90,6 +92,24 @@ describe('upload to analysis', () => {
     expect(directions.every((d) => d.sourceRef.verified && d.sourceRef.page === 1)).toBe(true);
   });
 
+  it('ignores a finished job delivered again instead of analysing twice', async () => {
+    const jobsOf = async () =>
+      (await listDocs(`organizations/${orgId}/jobs`, owner)).filter((job) => job.fields.documentId === documentId);
+    const before = await jobsOf();
+    expect(before.map((job) => [job.fields.type, job.fields.status, job.fields.attempts])).toEqual([
+      ['document_analysis', 'succeeded', 1],
+      ['document_extract', 'succeeded', 1],
+    ]);
+    for (const job of before) {
+      const name = job.fields.type === 'document_extract' ? 'processDocument' : 'runAnalysis';
+      expect(await deliverTask(name, { orgId, caseId, documentId, jobId: job.id })).toBe(204);
+    }
+    expect(await jobsOf()).toEqual(before);
+    expect(await listDocs(`organizations/${orgId}/cases/${caseId}/analyses`, owner)).toHaveLength(1);
+    const doc = await readDoc(`organizations/${orgId}/cases/${caseId}/documents/${documentId}`, owner);
+    expect(doc).toMatchObject({ processingStatus: 'ready', latestAnalysisId: analysisId });
+  });
+
   it('lets members open the original but nobody read the server-only text files', async () => {
     expect(await downloadStatus(storagePath, owner)).toBe(200);
     expect(await downloadStatus(storagePath, outsider)).toBe(403);
@@ -120,6 +140,36 @@ describe('upload checks', () => {
     // Members can no longer open it, and the file itself is gone.
     expect(await downloadStatus(uploaded.storagePath, owner)).toBe(403);
     expect(await adminObjectStatus(uploaded.storagePath)).toBe(404);
+  });
+
+  it('rejects a password-protected PDF with a message saying so', async () => {
+    const encrypted = new TextEncoder().encode('%PDF-1.7\n1 0 obj <<>> endobj\ntrailer << /Root 1 0 R /Encrypt 5 0 R >>');
+    const uploaded = await upload(encrypted);
+    const doc = await waitForDoc(`organizations/${orgId}/cases/${caseId}/documents/${uploaded.documentId}`, owner, finished);
+    expect(doc).toMatchObject({
+      processingStatus: 'rejected',
+      errorCode: 'encrypted_pdf',
+      errorMessage: 'This PDF is password-protected. Upload a copy without a password.',
+    });
+    expect(await adminObjectStatus(uploaded.storagePath)).toBe(404);
+  });
+
+  it('stops at a PDF with no text instead of sending an empty document to the AI', async () => {
+    const blank = new Uint8Array(readFileSync(new URL('../../seed/samples/blank-page.pdf', import.meta.url)));
+    const uploaded = await upload(blank);
+    const doc = await waitForDoc(`organizations/${orgId}/cases/${caseId}/documents/${uploaded.documentId}`, owner, finished);
+    expect(doc).toMatchObject({ processingStatus: 'failed', errorCode: 'needs_ocr', latestAnalysisId: null });
+    expect(doc.errorMessage).toMatch(/no readable text/);
+  });
+
+  it('refuses files over 15 MB before anything is uploaded', async () => {
+    const { error } = await call(
+      'startUpload',
+      { orgId, caseId, fileName: 'huge.pdf', mimeType: PDF, sizeBytes: 15 * 1024 * 1024 + 1 },
+      owner,
+    );
+    expect(error?.status).toBe('INVALID_ARGUMENT');
+    expect(error?.details.issues).toEqual([{ path: 'sizeBytes', message: 'Files must be 15 MB or smaller' }]);
   });
 
   it('refuses uploads that do not match the reservation', async () => {

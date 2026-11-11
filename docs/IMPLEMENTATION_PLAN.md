@@ -289,21 +289,52 @@ unsupported question says the documents don't establish the answer.
 
 ## Day 7 — Hardening and code freeze
 
-- [ ] **Authorization.** Finish the role × callable test matrix. Add Storage tenant-isolation tests.
-- [ ] **Bad files.** A renamed `.exe`, an encrypted PDF, an oversize file and a blank PDF are each
+- [x] **Authorization.** Finish the role × callable test matrix. Add Storage tenant-isolation tests.
+      `tests/integration/authz.test.ts` calls every callable as owner, admin, lawyer, paralegal,
+      viewer, suspended member, outsider and signed-out user, and fails if a callable is added
+      without a row.
+- [x] **Bad files.** A renamed `.exe`, an encrypted PDF, an oversize file and a blank PDF are each
       rejected or flagged, with a clear message.
-- [ ] **AI reliability.** Run the blueprint §12 checklist through `npm run eval`, and record the
-      results for the pitch.
-- [ ] **Idempotency.** Re-enqueue a finished job and replay `reviewAnalysis`; neither creates
+- [x] **AI reliability.** Run the blueprint §12 checklist through `npm run eval`, and record the
+      results for the pitch. Results from 8 Nov 2026 are below.
+- [x] **Idempotency.** Re-enqueue a finished job and replay `reviewAnalysis`; neither creates
       duplicates.
 - [ ] **Lock down.**
-  - [ ] Enforce App Check on Functions and Storage.
-  - [ ] Add the CSP header.
-  - [ ] CI bundle grep shows no API key.
+  - [ ] Enforce App Check on Functions and Storage. Waits on the reCAPTCHA Enterprise
+        registration (Day 0).
+  - [x] Add the CSP header. `vite preview` sends the same policy, so the e2e test runs under it.
+  - [x] CI bundle grep shows no API key.
 - [ ] **PWA checklist.** Install on Android Chrome, desktop Chrome and iOS Safari; update prompt;
       offline reload on a trusted device; sign-out wipe; Cache Storage holds only the app shell.
-- [ ] **Performance.** Route splitting confirmed; pdf.js worker cached on first use.
-- [ ] **Gate G4: code freeze at end of day.** Only fixes after this point.
+      Checked on the live site in headless Chromium: the service worker installs, Cache Storage
+      holds only the precached app files, and the shell reloads offline. The installs, the update
+      prompt and the signed-in checks still need a person and real devices.
+- [x] **Performance.** Route splitting confirmed; pdf.js worker cached on first use. Every page
+      is its own chunk and the PDF viewer loads on demand; the worker is left out of the precache
+      and cached by the service worker the first time a PDF opens.
+- [x] **Gate G4: code freeze at end of day.** Only fixes after this point. App Check arrives as
+      configuration (the site key and `ENFORCE_APP_CHECK`), not code.
+
+> **Status, 9 Nov 2026:** done except App Check enforcement and the PWA device checks, and
+> deployed. 27 new integration tests (75 in all) cover the role matrix, Storage isolation, bad
+> files and job replay. A Playwright test (`npm run test:e2e`, also in CI) runs the G3 demo path in
+> Chromium under the production CSP with the AI replayed.
+>
+> **Eval results** (`claude-opus-5-5`, `extract.v1`, `copilot.v2`, 8 Nov 2026):
+>
+> | Suite | Checks passed | Citations verified |
+> |---|---|---|
+> | Extraction: sample order | 4 of 5 | 18 of 18 |
+> | Extraction: prompt injection | 5 of 5 | 10 of 10 |
+> | Extraction: order with no dates | 4 of 4 | 7 of 7 |
+> | Extraction: garbled text | 5 of 5 | 12 of 12 |
+> | Extraction: Hindi order | 4 of 4 | 12 of 12 |
+> | Copilot: next hearing (answered with citations) | 5 of 5 | — |
+> | Copilot: amount owed (insufficient evidence) | 2 of 2 | — |
+>
+> The one miss: on the sample order the model suggested a due date the order does not state.
+> The eval checks the raw model output; the server already clears any due date not marked
+> explicit (`functions/src/ai/analysis.ts`), so no such date reaches a reviewer.
 
 ---
 

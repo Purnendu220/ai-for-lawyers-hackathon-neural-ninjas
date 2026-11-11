@@ -36,3 +36,9 @@ jobs:
 
       - name: Function integration tests
         run: npm run test:integration
+
+      - name: Browser for end-to-end tests
+        run: npx -w @casepilot/e2e-tests playwright install --with-deps chromium
+
+      - name: End-to-end demo path under the production CSP
+        run: npm run test:e2e

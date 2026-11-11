@@ -241,6 +241,7 @@ To use your own project instead, create one with Firestore in `asia-south1`, put
 | `npm test` | Unit tests |
 | `npm run test:rules` | Security-rules tests against the Firestore emulator |
 | `npm run test:integration` | Cloud Functions tests against the Auth, Firestore, Functions, Storage and Tasks emulators |
+| `npm run test:e2e` | Playwright demo path in Chromium against the emulators, under the production CSP (first run `npx -w @casepilot/e2e-tests playwright install chromium`) |
 | `npm run eval -w @casepilot/functions` | Live prompt evaluation on synthetic orders (needs `ANTHROPIC_API_KEY`; calls Claude) |
 | `npm run deploy` | Deploy everything to Firebase |
 | `npm run deploy:web` | Build and deploy only the web app |
@@ -255,8 +256,10 @@ To use your own project instead, create one with Firestore in `asia-south1`, put
   alive. On Windows, end the leftover `java.exe` running `cloud-firestore-emulator` in Task Manager.
   Firestore runs on port 8180, not the default 8080, because 8080 is often blocked on Windows.
 - **"Cannot find module '@rolldown/binding-…'" or a missing `@esbuild/…` package** after
-  `npm install <package>`: an npm bug pruned the native binaries. Delete `node_modules` and
-  `package-lock.json`, then run `npm install` once.
+  `npm install`: npm 11.6 (bundled with Node 24.8) drops the esbuild, rolldown and lightningcss
+  native binaries from `package-lock.json` and `node_modules`. Restore the lockfile
+  (`git checkout package-lock.json`) and install with a newer npm, for example
+  `npx npm@11.21.2 install`.
 - **The Firestore emulator exits with code 3221225786** right after you stop a previous run: wait a
   few seconds and start it again.
 - **The first callable request times out locally**: on some Windows machines the function worker

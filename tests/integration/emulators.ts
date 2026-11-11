@@ -47,7 +47,7 @@ export async function verifyEmail(user: TestUser): Promise<void> {
   user.token = body.idToken as string;
 }
 
-export type CallResult = { result?: any; error?: { status: string; message: string } };
+export type CallResult = { result?: any; error?: { status: string; message: string; details?: any } };
 
 /** Calls a callable function using the callable HTTP protocol. */
 export async function call(name: string, data: unknown, user?: TestUser): Promise<CallResult> {
@@ -104,25 +104,48 @@ export async function warmUp(names: string[]): Promise<void> {
 const BUCKET = process.env.EMULATOR_BUCKET ?? `${PROJECT}.appspot.com`;
 const STORAGE = `http://127.0.0.1:9199/v0/b/${BUCKET}/o`;
 
-/** Uploads like the web SDK does, so Storage rules apply. Returns the HTTP status. */
+const storageAuth = (user?: TestUser): Record<string, string> =>
+  user ? { authorization: `Firebase ${user.token}` } : {};
+
+/** Uploads like the web SDK does, so Storage rules apply. Signed out when `user` is omitted. Returns the HTTP status. */
 export async function uploadObject(
   path: string,
   bytes: Uint8Array,
   contentType: string,
-  user: TestUser,
+  user?: TestUser,
 ): Promise<number> {
   const response = await fetch(`${STORAGE}?uploadType=media&name=${encodeURIComponent(path)}`, {
     method: 'POST',
-    headers: { authorization: `Firebase ${user.token}`, 'content-type': contentType },
+    headers: { ...storageAuth(user), 'content-type': contentType },
     body: bytes,
   });
   return response.status;
 }
 
-/** Downloads an object as `user`. Returns the HTTP status. */
-export async function downloadStatus(path: string, user: TestUser): Promise<number> {
+/** Downloads an object as `user`, or signed out. Returns the HTTP status. */
+export async function downloadStatus(path: string, user?: TestUser): Promise<number> {
   const response = await fetch(`${STORAGE}/${encodeURIComponent(path)}?alt=media`, {
-    headers: { authorization: `Firebase ${user.token}` },
+    headers: storageAuth(user),
+  });
+  return response.status;
+}
+
+/** Deletes an object as `user`. Returns the HTTP status. */
+export async function deleteObjectStatus(path: string, user: TestUser): Promise<number> {
+  const response = await fetch(`${STORAGE}/${encodeURIComponent(path)}`, {
+    method: 'DELETE',
+    headers: storageAuth(user),
+  });
+  return response.status;
+}
+
+/** Delivers a task to a task-queue function the way Cloud Tasks does, for example a second time. */
+export async function deliverTask(name: string, payload: unknown): Promise<number> {
+  const response = await fetch(`${FUNCTIONS}/${name}`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ data: payload }),
+    signal: AbortSignal.timeout(110_000),
   });
   return response.status;
 }
@@ -163,8 +186,10 @@ export async function listDocs(path: string, user: TestUser): Promise<{ id: stri
   }));
 }
 
+export type ProcessedSample = { documentId: string; storagePath: string; analysisId: string };
+
 /** Uploads the sample order to a case and waits for its analysis (replayed in the emulator). */
-export async function analyseSample(orgId: string, caseId: string, user: TestUser): Promise<string> {
+export async function uploadSample(orgId: string, caseId: string, user: TestUser): Promise<ProcessedSample> {
   const { readFileSync } = await import('node:fs');
   const pdf = new Uint8Array(readFileSync(new URL('../../seed/samples/sample-order.pdf', import.meta.url)));
   const { result } = await call(
@@ -179,7 +204,12 @@ export async function analyseSample(orgId: string, caseId: string, user: TestUse
     (d) => ['ready', 'failed', 'rejected'].includes(d.processingStatus as string),
   );
   if (doc.processingStatus !== 'ready') throw new Error(`Sample analysis ${String(doc.processingStatus)}: ${String(doc.errorCode)}`);
-  return doc.latestAnalysisId as string;
+  return { documentId: result.documentId, storagePath: result.storagePath, analysisId: doc.latestAnalysisId as string };
+}
+
+/** Like uploadSample, returning only the analysis ID. */
+export async function analyseSample(orgId: string, caseId: string, user: TestUser): Promise<string> {
+  return (await uploadSample(orgId, caseId, user)).analysisId;
 }
 
 export const emptyCaseFields = (title: string) => ({

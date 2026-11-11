@@ -1,10 +1,31 @@
+import { readFileSync } from 'node:fs';
 import { fileURLToPath, URL } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig({
+type HostingHeaders = { hosting: { headers: { headers: { key: string; value: string }[] }[] } };
+
+/**
+ * The Content-Security-Policy Firebase Hosting sends (firebase.json), so `vite preview` runs the
+ * build under the same policy. The emulator build also talks to the local emulators over HTTP.
+ */
+function hostingCsp(mode: string): string {
+  const config = JSON.parse(
+    readFileSync(new URL('../../firebase.json', import.meta.url), 'utf8'),
+  ) as HostingHeaders;
+  const csp = config.hosting.headers
+    .flatMap((rule) => rule.headers)
+    .find((header) => header.key === 'Content-Security-Policy')?.value;
+  if (!csp) throw new Error('firebase.json has no Content-Security-Policy header');
+  if (mode !== 'emulator') return csp;
+  return csp
+    .replace('connect-src', 'connect-src http://127.0.0.1:*')
+    .replace(/;\s*upgrade-insecure-requests/, '');
+}
+
+export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     tailwindcss(),
@@ -57,5 +78,9 @@ export default defineConfig({
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
   server: { port: 5173, strictPort: true },
-  preview: { port: 4173, strictPort: true },
-});
+  preview: {
+    port: 4173,
+    strictPort: true,
+    headers: { 'Content-Security-Policy': hostingCsp(mode) },
+  },
+}));

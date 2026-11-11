@@ -22,6 +22,7 @@
     "test": "npm run test --workspaces --if-present",
     "test:rules": "node scripts/firebase.mjs emulators:exec --project demo-casepilot --only firestore \"npm run test:emulator -w @casepilot/rules-tests\"",
     "test:integration": "npm run build -w @casepilot/functions && node scripts/firebase.mjs emulators:exec --project demo-casepilot --only auth,firestore,functions,storage,tasks \"npm run test:emulator -w @casepilot/integration-tests\"",
+    "test:e2e": "npm run build -w @casepilot/functions && node scripts/firebase.mjs emulators:exec --project demo-casepilot --only auth,firestore,functions,storage,tasks \"npm run test:emulator -w @casepilot/e2e-tests\"",
     "deploy": "firebase deploy",
     "deploy:web": "firebase deploy --only hosting",
     "deploy:rules": "firebase deploy --only firestore",
